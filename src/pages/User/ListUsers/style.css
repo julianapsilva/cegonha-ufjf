@@ -1,0 +1,40 @@
+.wrapper-users {
+    display: flex;
+    justify-content: center;
+    min-height: 70vh;
+    align-items: center;
+    flex-direction: column;
+}
+
+.wrapper-users h1 {
+    font-size: 30px;
+}
+
+.wrapper-users table {
+    width: 90%;
+    max-width: 1000px;
+    margin-top: 20px;
+}
+
+.wrapper-users .title th {
+    padding: 10px;
+}
+
+.wrapper-users table, th, td {
+    border: 1px solid rgba(0, 0, 0, .5);
+    text-align: center;
+}
+
+.wrapper-users td {
+    padding: 10px;
+}
+
+.wrapper-users .actions {
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+    color: #111827;
+    font-size: 19px;
+    border-top: none;
+}
+

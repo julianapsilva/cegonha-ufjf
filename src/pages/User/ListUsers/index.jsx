@@ -1,11 +1,14 @@
 import React, { useState, useEffect } from 'react';
-import api from '../../services/api';
+import api from '../../../services/api';
 import "./style.css"
 import Modal from 'react-modal';
 import CreateUser from '../CreateUser';
+import EditiUser from '../EditUser';
+import Adress from '../../Adress/ListAdress'
 
 
 const ListUsers = () => {
+    
     const [data, setData] = useState([])
 
     useEffect(() => {
@@ -17,24 +20,41 @@ const ListUsers = () => {
     }, [])
 
     const [modalIsOpen, setIsOpen] = React.useState(false);
+    const [page, setPage] = React.useState(false);
+    const [cpfUser, setCpfUser] = React.useState(false);
+
+    function swichPage(page,cpf) {
+        setPage(page)
+        openModal()
+        setCpfUser(cpf)
+    }
 
     function openModal() {
         setIsOpen(true);
     }
-
+    
+  
     function closeModal() {
         setIsOpen(false);
     }
+
+    const reload = () => {
+
+        window.location.reload();
+      };
+      
     const handleDelete = (id, index) => {
         const confirm = window.confirm(`Deseja realmente deletar o usuário?`);
         if (confirm) {
-            //   api.delete(`/users/${id}`).then(
-            //     data.splice(index, 1),
-            //     setData([...data]),
-            //     alert(
-            //       "Usuário deletado com sucesso!"
-            //     )
-            //   )
+               api.delete(`user/`+ `${id}`)
+               .then(
+                //data.splice(index, 1),
+                setData([...data]),
+                alert(
+                  "Usuário deletado com sucesso!"
+                 )
+               )
+               reload()    
         }
     }
 
@@ -47,7 +67,9 @@ const ListUsers = () => {
                         <th>Nome</th>
                         <th>Email</th>
                         <th>CPF</th>
-                        <th>Ações</th>
+                        <th>Editar</th>
+                        <th>Eendereços</th>
+                        <th>Excluir</th>
                     </tr></thead>
                 <tbody>
                     {
@@ -56,11 +78,16 @@ const ListUsers = () => {
                                 <td>{name}</td>
                                 <td>{email}</td>
                                 <td>{cpf}</td>
-                                <td className='actions'>
-                                    <button className='bi bi-pencil' onClick={openModal}></button>
-                                    <button className='bi bi-pin-map-fill'></button>
+                                <td>
+                                    <button className='bi bi-pencil' onClick={() => swichPage('EditUser',cpf)}></button>
+                                </td>
+                                <td >
+                                    <button className='bi bi-pin-map-fill' onClick={() => swichPage('Adress',cpf)}></button>
+                                </td>
+                                <td >
                                     <button className='bi bi-trash' onClick={() => handleDelete(id, index)}></button>
                                 </td>
+                                
                             </tr>
                         ))
                     }
@@ -72,7 +99,11 @@ const ListUsers = () => {
                 onRequestClose={closeModal}
             >
                 <button onClick={closeModal}>close</button>
-                <CreateUser />
+                    { page === "EditUser" ?(
+                        <EditiUser cpfUser={cpfUser}/>
+                    ):page === "Adress" ?(
+                        <Adress cpfUser={cpfUser}/>
+                    ):null}
             </Modal>
         </div>
 
