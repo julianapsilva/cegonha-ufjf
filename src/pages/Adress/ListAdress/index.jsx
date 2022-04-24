@@ -8,15 +8,22 @@ import CreateAdress from '../CreateAdress';
 
 
 const ListAdress = (props) => {
+
+    const reload = () => {
+
+        window.location.reload();
+      };
     
     const [data, setData] = useState([])
     const [page, setPage] = React.useState(false);
     const [idAdress, setIdAdress] = React.useState(false);
+    const [idUser, setIdUser] = React.useState();
 
     useEffect(() => {
         (async () => {
             const { data } = await api.get("user/" + props.cpfUser )
             setData(data)
+            setIdUser(data[0].id)
         })()
 
     }, [])
@@ -34,22 +41,24 @@ const ListAdress = (props) => {
         setIsOpen(false);
     }
 
-    function swichPage(page,id) {
+    function swichPage(page,idAdress) {
         setPage(page)
+        setIdAdress(idAdress)
         openModal()
-        setIdAdress(id)
+        
     }
 
     const handleDelete = (id, index) => {
         const confirm = window.confirm(`Deseja realmente deletar o usuário?`);
         if (confirm) {
-            //   api.delete(`/users/${id}`).then(
-            //     data.splice(index, 1),
-            //     setData([...data]),
-            //     alert(
-            //       "Usuário deletado com sucesso!"
-            //     )
-            //   )
+                api.delete("adress/" + id + "/" + idUser ).then(
+                data.splice(index, 1),
+                 setData([...data]),
+                alert(
+                   "Endereço deletado com sucesso!"
+                 )
+               )
+               reload() 
         }
     }
 
@@ -89,7 +98,7 @@ const ListAdress = (props) => {
                         </tbody>
                     </table>
                 ))}
-                <button onClick={() => swichPage('CreateAdress')}>ADICIONAR ENDEREÇO</button>
+                <button onClick={() => swichPage('CreateAdress',)}>ADICIONAR ENDEREÇO</button>
             </div>
 
             <Modal
@@ -98,9 +107,9 @@ const ListAdress = (props) => {
             >
                 <button onClick={closeModal}>close</button>
                     { page === "EditAdress" ?(
-                        <EditAdress idAdress={idAdress}/>
+                        <EditAdress idAdress={idAdress} idUser ={idUser}/>
                     ):page === "CreateAdress" ?(
-                        <CreateAdress/>
+                        <CreateAdress cpfUser={props.cpfUser}/>
                     ):null}
             </Modal>
         </div>

@@ -3,7 +3,7 @@ import { useNavigate  } from 'react-router-dom';
 import "./style.css"
 import api from "../../../services/api"
 
-export default function CreateAdress() {
+export default function CreateAdress(props) {
 
     const navigate = useNavigate();
 
@@ -14,13 +14,17 @@ export default function CreateAdress() {
     const [uf, setUf] = useState('')
     const [cep, setCep] = useState('')
 
-    
+    const reload = () => {
+
+        window.location.reload();
+      };
    
 
     const handleSubmit = e => {
         e.preventDefault();
     
         const values = {
+          cpfUser : props.cpfUser,
           street,
           number, 
           district, 
@@ -36,10 +40,10 @@ export default function CreateAdress() {
             uf &&
             cep
           ){
-        api.post("/user", values)
+        api.post("/adress", values)
           .then(res => {
             alert("SUCESSO!!! \n Cadastro realizado com sucesso!!!");
-            navigate("/users");
+            reload() 
           }, 
           (err) => {alert("Erro!!! \n O cadastro não foi realizado!!!", err);
          })} else {
@@ -120,7 +124,7 @@ export default function CreateAdress() {
                     </div>
                     
 
-                    <button>ADICIONAR USUÁRIO</button>
+                    <button>ADICIONAR ENDEREÇO</button>
                 </form>
             </div>
         </div>
