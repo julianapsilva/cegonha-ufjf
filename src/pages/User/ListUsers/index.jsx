@@ -8,7 +8,6 @@ import Adress from '../../Adress/ListAdress'
 
 
 const ListUsers = () => {
-    
     const [data, setData] = useState([])
 
     useEffect(() => {

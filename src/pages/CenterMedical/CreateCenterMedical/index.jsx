@@ -54,7 +54,6 @@ export default function CreateCenterMedical(props) {
             uf &&
             cep
           ){
-        console.log('E os dados?',values)
         api.post("medical-center", values)
           .then(res => {
             alert("SUCESSO!!! \n Cadastro realizado com sucesso!!!");

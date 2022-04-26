@@ -49,7 +49,6 @@ export default function EditAdress(props) {
           city,
           uf
         };
-        console.log('location', values)
         api.put("adress/" + props.idAdress + "/" + props.idUser, values) 
           .then(res => {
             alert("SUCESSO!!! \n Edição realizada com sucesso!!!");

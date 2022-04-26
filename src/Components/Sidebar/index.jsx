@@ -1,7 +1,10 @@
-import React from 'react'
+import React, { useState } from 'react'
 import { Link } from 'react-router-dom';
 
+
 export default function Sidebar() {
+
+    
 
     function dropDown() {
         // document.querySelector('#submenu').classList.toggle('hidden')
@@ -12,6 +15,7 @@ export default function Sidebar() {
     function Openbar() {
         // document.querySelector('.sidebar').classList.toggle('left-[-300px]')
     }
+
     return (
         <div>
             <span className="absolute text-white text-4xl top-5 left-4 cursor-pointer" onClick={Openbar()}>

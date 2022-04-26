@@ -1,10 +1,11 @@
 import axios from "axios";
+import { getToken } from "./auth";
 
 const axiosInstance = axios.create({
   baseURL: "http://localhost:5000/" || "https://cegonhaufjf.herokuapp.com/",
 });
 
-axiosInstance.interceptors.request.use(
+/*axiosInstance.interceptors.request.use(
   function(config) {
     const token = window.localStorage.token;
     if (token) {
@@ -15,7 +16,15 @@ axiosInstance.interceptors.request.use(
   function(error) {
     return Promise.reject(error);
   }
-);
+);*/
+
+axiosInstance.interceptors.request.use(async config => {
+  const token = getToken();
+  if (token) {
+    config.headers.Authorization = `Bearer ${token}`;
+  }
+  return config;
+});
 
 export const api = {
   post(endpoint, body) {
@@ -31,6 +40,7 @@ export const api = {
   put(endpoint, body) {
     return axiosInstance.put(endpoint, body);
   },
+  
 };
 
 export default api;
