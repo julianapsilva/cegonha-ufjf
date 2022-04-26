@@ -51,6 +51,26 @@ export default function Sidebar() {
                         <div
                             className="p-2.5 mt-2 flex items-center rounded-md px-4 duration-300 cursor-pointer 
                              hover:bg-blue-600">
+                            <i className="bi bi-building"></i>
+                            <div className="flex justify-between w-full items-center" onClick={dropDown()}>
+                                <span className="text-[15px] ml-4 text-gray-200">Centros médicos</span>
+                                <span className="text-sm rotate-180" id="arrow">
+                                    <i className="bi bi-chevron-down"></i>
+                                </span>
+                            </div>
+                        </div>
+                        <div className=" leading-7 text-left text-sm font-thin mt-2 w-4/5 mx-auto" id="submenu">
+                            <Link to="/center-medical">
+                                <h1 className="cursor-pointer p-2 hover:bg-gray-700 rounded-md mt-1">Listar centros médicos</h1>
+                            </Link>
+                            <Link to="/create-center-medical">
+                                <h1 className="cursor-pointer p-2 hover:bg-gray-700 rounded-md mt-1">Adicionar novo centro médico</h1>
+                            </Link>
+                        </div>
+
+                        <div
+                            className="p-2.5 mt-2 flex items-center rounded-md px-4 duration-300 cursor-pointer 
+                             hover:bg-blue-600">
                             <i className="bi bi-pin-map-fill"></i>
                             <div className="flex justify-between w-full items-center" onClick={dropDown()}>
                                 <span className="text-[15px] ml-4 text-gray-200">Endereços cobertos</span>
@@ -64,25 +84,6 @@ export default function Sidebar() {
                                 <h1 className="cursor-pointer p-2 hover:bg-gray-700 rounded-md mt-1">Listar endereços</h1>
                             </Link>
                             <h1 className="cursor-pointer p-2 hover:bg-gray-700 rounded-md mt-1">Adicionar novo endereço</h1>
-                        </div>
-
-
-                        <div
-                            className="p-2.5 mt-2 flex items-center rounded-md px-4 duration-300 cursor-pointer 
-                             hover:bg-blue-600">
-                            <i className="bi bi-building"></i>
-                            <div className="flex justify-between w-full items-center" onClick={dropDown()}>
-                                <span className="text-[15px] ml-4 text-gray-200">Centros médicos</span>
-                                <span className="text-sm rotate-180" id="arrow">
-                                    <i className="bi bi-chevron-down"></i>
-                                </span>
-                            </div>
-                        </div>
-                        <div className=" leading-7 text-left text-sm font-thin mt-2 w-4/5 mx-auto" id="submenu">
-                            <Link to="/test">
-                                <h1 className="cursor-pointer p-2 hover:bg-gray-700 rounded-md mt-1">Listar centros médicos</h1>
-                            </Link>
-                            <h1 className="cursor-pointer p-2 hover:bg-gray-700 rounded-md mt-1">Adicionar novo centro médico</h1>
                         </div>
 
                         <div

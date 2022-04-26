@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react'
 import "./style.css"
 import api from "../../../services/api"
 
-export default function EditAdress(props) {
+export default function EditCenterMedical(props) {
 
     const reload = () => {
 
@@ -12,6 +12,11 @@ export default function EditAdress(props) {
 
     const [data, setData] = useState([])
 
+    const [image, setImage] = useState('')
+    const [phone, setPhone] = useState('')
+    const [latitude, setLatitude] = useState('')
+    const [longitude, setLongitude] = useState('')
+    const [name, setName] = useState('')
     const [street, setStreet] = useState('')
     const [number, setNumber] = useState('')
     const [district, setDistrict] = useState('')
@@ -23,14 +28,20 @@ export default function EditAdress(props) {
 
     useEffect(() => {
         (async () => {
-            const  result  = await api.get("adress/" + props.idAdress);
+            const  result  = await api.get("medical-center/" + props.idCenterMedical);
             setData(result)
-            setStreet(result.data[0].street)
-            setNumber(result.data[0].number)
-            setDistrict(result.data[0].district)
-            setCity(result.data[0].city)
-            setUf(result.data[0].uf)
-            setCep(result.data[0].cep)
+            
+            setImage(result.data.image)
+            setName(result.data.name)
+            setPhone(result.data.phone)
+            setLatitude(result.data.latitude)
+            setLongitude(result.data.longitude)
+            setStreet(result.data.street)
+            setNumber(result.data.number)
+            setDistrict(result.data.district)
+            setCity(result.data.city)
+            setUf(result.data.uf)
+            setCep(result.data.cep)
         })()
 
     }, [])
@@ -42,6 +53,11 @@ export default function EditAdress(props) {
         e.preventDefault();
     
         const values = {
+          image,
+          name,
+          phone,
+          latitude,
+          longitude,
           street,
           number,
           district,
@@ -49,8 +65,7 @@ export default function EditAdress(props) {
           city,
           uf
         };
-        console.log('location', values)
-        api.put("adress/" + props.idAdress + "/" + props.idUser, values) 
+        api.put("medical-center/" + props.idCenterMedical, values) 
           .then(res => {
             alert("SUCESSO!!! \n Edição realizada com sucesso!!!");
             reload()
@@ -65,11 +80,36 @@ export default function EditAdress(props) {
 
 
             <div class="wrapper">
-                <header>Editar endreço</header>
+                <header>Editar Centro Médico</header>
                 <form onSubmit={handleSubmit}>
+                <div>
+                        <p>Imagem</p>
+                        <input type="text" defaultValue={image} onChange={(r) => { setImage(r.target.value) }} />
+                    </div>
+
+                    <div>
+                        <p>Nome</p>
+                        <input type="text" defaultValue={name} onChange={(r) => { setName(r.target.value) }} />
+                    </div>
+                    
+                    <div>
+                        <p>Telefone</p>
+                        <input type="text" defaultValue={phone} onChange={(r) => { setPhone(r.target.value) }} />
+                    </div>
+
+                    <div>
+                        <p>Latitude</p>
+                        <input type="text" defaultValue={latitude} onChange={(r) => { setLatitude(r.target.value) }} />
+                    </div>
+
+                    <div>
+                        <p>Longitude</p>
+                        <input type="text" defaultValue={longitude} onChange={(r) => { setLongitude(r.target.value) }} />
+                    </div>
+
                     <div>
                         <p>Rua</p>
-                        <input type="text" fullWidth defaultValue={street} onChange={(r) => { setStreet(r.target.value) }}  />
+                        <input type="text" defaultValue={street} onChange={(r) => { setStreet(r.target.value) }}  />
                     </div>
 
                     <div>
