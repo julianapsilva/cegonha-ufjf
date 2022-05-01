@@ -41,6 +41,7 @@ export default function CreateUser() {
       setValue("district", data.bairro);
       setValue("city", data.localidade);
       setValue("uf", data.uf);
+      setValue("cep", target.value)
       setFocus("number");
     });
   };
@@ -110,9 +111,7 @@ export default function CreateUser() {
               name="cep"
               {...register("cep")}
               onBlur={verifyCEP}
-              onChange={(event) => {
-                cepMask(event);
-              }}
+              onChange={(event) => cepMask(event)}
             />
             <p className="validationError">
               {" "}

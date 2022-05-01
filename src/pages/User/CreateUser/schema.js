@@ -9,7 +9,7 @@ const schema = yup.object().shape({
     uf: yup.string().required(),
     cep: yup.string().required(),
     email: yup.string().email().required(),
-    cpf: yup.number().positive().integer().required(),
+    cpf: yup.string().required(),
     number: yup.number().positive().integer().required(),
     password: yup.string().min(4).max(15).required(),
   });
