@@ -6,7 +6,8 @@ import { useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import axios from "axios";
 import schema from "./schema";
-
+import { cpfMask } from "../../../utils/cpfMask";
+import { cepMask } from "../../../utils/cepMask";
 
 export default function CreateUser() {
   const {
@@ -36,7 +37,6 @@ export default function CreateUser() {
   const verifyCEP = ({ target }) => {
     const cep = target.value.replace(/\D/g, "");
     axios.get(`https://viacep.com.br/ws/${cep}/json/`).then(({ data }) => {
-      console.log(data);
       setValue("street", data.logradouro);
       setValue("district", data.bairro);
       setValue("city", data.localidade);
@@ -89,7 +89,14 @@ export default function CreateUser() {
 
           <div>
             <p>CPF</p>
-            <input type="text" name="cpf" {...register("cpf")} />
+            <input
+              type="text"
+              name="cpf"
+              {...register("cpf")}
+              onChange={(event) => {
+                cpfMask(event);
+              }}
+            />
             <p className="validationError">
               {" "}
               {errors?.cpf && "Campo obrigatório, insira apenas números."}{" "}
@@ -103,6 +110,9 @@ export default function CreateUser() {
               name="cep"
               {...register("cep")}
               onBlur={verifyCEP}
+              onChange={(event) => {
+                cepMask(event);
+              }}
             />
             <p className="validationError">
               {" "}

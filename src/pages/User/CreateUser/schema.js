@@ -1,7 +1,7 @@
 import * as yup from "yup";
 
 const schema = yup.object().shape({
-    username: yup.string().required("First Name should be required please"),
+    username: yup.string().required(),
     name: yup.string().required(),
     street: yup.string().required(),
     district: yup.string().required(),
@@ -12,6 +12,5 @@ const schema = yup.object().shape({
     cpf: yup.number().positive().integer().required(),
     number: yup.number().positive().integer().required(),
     password: yup.string().min(4).max(15).required(),
-    confirmPassword: yup.string().oneOf([yup.ref("password"), null]),
   });
 export default schema
