@@ -1,64 +1,64 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react'
 import { useNavigate  } from 'react-router-dom';
-import "./style.css";
-import api from "../../../services/api";
+import "./style.css"
+import api from "../../../services/api"
 import Sidebar from '../../../Components/Sidebar';
 
-export default function CreateCenterMedical(props) {
+export default function CreateCoverAdress(props) {
 
     const navigate = useNavigate();
     
-    const [image, setImage] = useState('')
-    const [phone, setPhone] = useState('')
-    const [latitude, setLatitude] = useState(0)
-    const [longitude, setLongitude] = useState(0)
-    const [name, setName] = useState('')
     const [street, setStreet] = useState('')
-    const [number, setNumber] = useState(0)
+    const [number_start, setNumber_start] = useState('')
+    const [number_end, setNumber_end] = useState('')
     const [district, setDistrict] = useState('')
     const [city, setCity] = useState('')
     const [uf, setUf] = useState('')
     const [cep, setCep] = useState('')
+    const [id_addres_parto, setId_addres_parto] = useState('')
+    const [id_addres_pre_natal, setId_addres_pre_natal] = useState('')
 
-    const reload = () => {
 
-        window.location.reload();
-      };
-   
+    const [data, setData] = useState([]);
+
+    useEffect(() => {
+        const fetchData = async () => {
+          const result = await api.get("medical-center");
+          setData(result.data);
+        };
+        fetchData();
+      }, []);
+
 
     const handleSubmit = e => {
         e.preventDefault();
     
         const values = {
-          image,
-          phone,
-          latitude,
-          longitude,
-          name,
-          street,
-          number, 
-          district, 
-          city,
-          uf, 
-          cep
-        };
+            street, 
+            number_start, 
+            number_end, 
+            district, 
+            city, 
+            uf, 
+            cep,
+            id_addres_parto, 
+            id_addres_pre_natal, 
+       };
         if(
-            image &&
-            phone &&
-            latitude &&
-            longitude &&
-            name &&
-            street &&
-            number &&
+            street && 
+            number_start &&
+            number_end &&
             district &&
             city &&
             uf &&
-            cep
+            cep &&
+            id_addres_parto &&
+            id_addres_pre_natal
           ){
-        api.post("medical-center", values)
+        api.post("cover-address", values)
           .then(res => {
-            alert("SUCESSO!!! \n Cadastro realizado com sucesso!!!");
-            navigate("/center-medical");
+            alert("SUCESSO!!! \n Endereço cadastrado com sucesso!!!");
+            navigate("/cover-adress") 
           }, 
           (err) => {alert("Erro!!! \n O cadastro não foi realizado!!!", err);
          })} else {
@@ -72,48 +72,25 @@ export default function CreateCenterMedical(props) {
         <div> 
             <Sidebar/>
             <div className='create-user'>
+
+
                 <div class="wrapper">
-                    <header>Cadastrar novo Centro Médico</header>
+                    <header>Cadastrar novo Endereço Coberto</header>
                     <form onSubmit={handleSubmit}>
 
                         <div>
-                            <p>Imagem</p>
-                            <input type="text" onChange={(r) => { setImage(r.target.value) }} />
+                            <p>Rua</p>
+                            <input type="text"  onChange={(r) => { setStreet(r.target.value) }} />
                         </div>
 
                         <div>
-                            <p>Nome</p>
-                            <input type="text" onChange={(r) => { setName(r.target.value) }} />
+                            <p>Numero inicial</p>
+                            <input type="text"  onChange={(r) => { setNumber_start(r.target.value) }} />
                         </div>
                         
                         <div>
-                            <p>Telefone</p>
-                            <input type="text" onChange={(r) => { setPhone(r.target.value) }} />
-                        </div>
-
-                        <div>
-                            <p>Latitude</p>
-                            <input type="text" onChange={(r) => { setLatitude(r.target.value) }} />
-                        </div>
-
-                        <div>
-                            <p>Longitude</p>
-                            <input type="text" onChange={(r) => { setLongitude(r.target.value) }} />
-                        </div>
-
-                        <div>
-                            <p>Rua</p>
-                            <input type="text" onChange={(r) => { setStreet(r.target.value) }} />
-                        </div>
-
-                        <div>
-                            <p>Número</p>
-                            <input type="text" onChange={(r) => { setNumber(r.target.value) }} />
-                        </div>
-
-                        <div>
-                            <p>Bairro</p>
-                            <input type="text" onChange={(r) => { setDistrict(r.target.value) }} />
+                            <p>Numero final</p>
+                            <input type="text"  onChange={(r) => { setNumber_end(r.target.value) }} />
                         </div>
 
                         <div>
@@ -122,9 +99,15 @@ export default function CreateCenterMedical(props) {
                         </div>
 
                         <div>
+                            <p>Bairro</p>
+                            <input type="text"  onChange={(r) => { setDistrict(r.target.value) }} />
+                        </div>
+
+                        <div>
                             <p>Cidade</p>
                             <input type="text" onChange={(r) => { setCity(r.target.value) }} />
                         </div>
+
 
                         <div class="drop-list">
                             <div class="from">
@@ -161,9 +144,39 @@ export default function CreateCenterMedical(props) {
                                 </div>
                             </div>
                         </div>
-                        
+                        <div class="drop-list2">
+                            <div class="from">
+                                <p>local de parto</p>
+                                <div class="select-box">
+                                    <select onChange={(r) => { setId_addres_parto(r.target.value) }}>
+                                        <option value={''}>{''} </option>
+                                        {data.map((i) => (
+                                        <option key={i.value} value={i.id}>
+                                        {i.name}
+                                        </option>
+                                    ))}
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
 
-                        <button>ADICIONAR CENTRO MÉDICO</button>
+                        <div class="drop-list2">
+                            <div class="from">
+                                <p>local de pré-natal</p>
+                                <div class="select-box">
+                                    <select onChange={(r) => { setId_addres_pre_natal(r.target.value) }}>
+                                        <option value={''}>{''} </option>
+                                        {data.map((i) => (
+                                        <option key={i.value} value={i.id}>
+                                        {i.name}
+                                        </option>
+                                    ))}
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+
+                        <button>ADICIONAR ENDEREÇO COBERTO</button>
                     </form>
                 </div>
             </div>

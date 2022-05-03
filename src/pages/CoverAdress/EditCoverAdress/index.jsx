@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react'
 import "./style.css"
 import api from "../../../services/api"
 
-export default function EditCenterMedical(props) {
+export default function EditCoverAdress(props) {
 
     const reload = () => {
 
@@ -11,37 +11,42 @@ export default function EditCenterMedical(props) {
    
 
     const [data, setData] = useState([])
+    const [dataCm, setDataCm,] = useState([])
 
-    const [image, setImage] = useState('')
-    const [phone, setPhone] = useState('')
-    const [latitude, setLatitude] = useState('')
-    const [longitude, setLongitude] = useState('')
-    const [name, setName] = useState('')
     const [street, setStreet] = useState('')
-    const [number, setNumber] = useState('')
+    const [number_start, setNumber_start] = useState('')
+    const [number_end, setNumber_end] = useState('')
     const [district, setDistrict] = useState('')
     const [city, setCity] = useState('')
     const [uf, setUf] = useState('')
     const [cep, setCep] = useState('')
+    const [id_addres_parto, setId_addres_parto] = useState('')
+    const [id_addres_pre_natal, setId_addres_pre_natal] = useState('')
+
+    useEffect(() => {
+        const fetchData = async () => {
+          const result = await api.get("medical-center");
+          setDataCm(result.data);
+        };
+        fetchData();
+      }, []);
 
 
 
     useEffect(() => {
         (async () => {
-            const  result  = await api.get("medical-center/" + props.idCenterMedical);
+            const  result  = await api.get("cover-address/" + props.idCoverAdress);
             setData(result)
             
-            setImage(result.data.image)
-            setName(result.data.name)
-            setPhone(result.data.phone)
-            setLatitude(result.data.latitude)
-            setLongitude(result.data.longitude)
             setStreet(result.data.street)
-            setNumber(result.data.number)
+            setNumber_start(result.data.number_start)
+            setNumber_end(result.data.number_end)
             setDistrict(result.data.district)
             setCity(result.data.city)
             setUf(result.data.uf)
             setCep(result.data.cep)
+            setId_addres_parto(result.data.id_addres_parto)
+            setId_addres_pre_natal(result.data.id_addres_pre_natal)
         })()
 
     }, [])
@@ -53,19 +58,17 @@ export default function EditCenterMedical(props) {
         e.preventDefault();
     
         const values = {
-          image,
-          name,
-          phone,
-          latitude,
-          longitude,
-          street,
-          number,
-          district,
-          cep, 
-          city,
-          uf
+             street, 
+             number_start, 
+             number_end, 
+             district, 
+             city, 
+             uf, 
+             cep,
+             id_addres_parto, 
+             id_addres_pre_natal, 
         };
-        api.put("medical-center/" + props.idCenterMedical, values) 
+        api.put("cover-address/" + props.idCoverAdress, values) 
           .then(res => {
             alert("SUCESSO!!! \n Edição realizada com sucesso!!!");
             reload()
@@ -77,47 +80,24 @@ export default function EditCenterMedical(props) {
 
     return (
         <div className='create-user'>
+
+
             <div class="wrapper">
-                <header>Editar Centro Médico</header>
+                <header>Editar Endereço Coberto</header>
                 <form onSubmit={handleSubmit}>
                 <div>
-                        <p>Imagem</p>
-                        <input type="text" defaultValue={image} onChange={(r) => { setImage(r.target.value) }} />
+                        <p>Rua</p>
+                        <input type="text" defaultValue={street} onChange={(r) => { setStreet(r.target.value) }} />
                     </div>
 
                     <div>
-                        <p>Nome</p>
-                        <input type="text" defaultValue={name} onChange={(r) => { setName(r.target.value) }} />
+                        <p>Numero inicial</p>
+                        <input type="text" defaultValue={number_start} onChange={(r) => { setNumber_start(r.target.value) }} />
                     </div>
                     
                     <div>
-                        <p>Telefone</p>
-                        <input type="text" defaultValue={phone} onChange={(r) => { setPhone(r.target.value) }} />
-                    </div>
-
-                    <div>
-                        <p>Latitude</p>
-                        <input type="text" defaultValue={latitude} onChange={(r) => { setLatitude(r.target.value) }} />
-                    </div>
-
-                    <div>
-                        <p>Longitude</p>
-                        <input type="text" defaultValue={longitude} onChange={(r) => { setLongitude(r.target.value) }} />
-                    </div>
-
-                    <div>
-                        <p>Rua</p>
-                        <input type="text" defaultValue={street} onChange={(r) => { setStreet(r.target.value) }}  />
-                    </div>
-
-                    <div>
-                        <p>Número</p>
-                        <input type="text" defaultValue={number} onChange={(r) => { setNumber(r.target.value) }} />
-                    </div>
-
-                    <div>
-                        <p>Bairro</p>
-                        <input type="text" defaultValue={district} onChange={(r) => { setDistrict(r.target.value) }} />
+                        <p>Numero final</p>
+                        <input type="text" defaultValue={number_end} onChange={(r) => { setNumber_end(r.target.value) }} />
                     </div>
 
                     <div>
@@ -126,9 +106,15 @@ export default function EditCenterMedical(props) {
                     </div>
 
                     <div>
+                        <p>Bairro</p>
+                        <input type="text" defaultValue={district} onChange={(r) => { setDistrict(r.target.value) }} />
+                    </div>
+
+                    <div>
                         <p>Cidade</p>
                         <input type="text" defaultValue={city} onChange={(r) => { setCity(r.target.value) }} />
                     </div>
+
 
                     <div class="drop-list">
                         <div class="from">
@@ -166,6 +152,37 @@ export default function EditCenterMedical(props) {
                             </div>
                         </div>
                     </div>
+
+                    <div class="drop-list2">
+                        <div class="from">
+                            <p>local de parto</p>
+                            <div class="select-box">
+                                <select onChange={(r) => { setId_addres_parto(r.target.value) }}>
+                                    {dataCm.map((i) => (
+                                    <option key={i.value} value={i.id}>
+                                    {i.name}
+                                    </option>
+                                ))}
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="drop-list2">
+                        <div class="from">
+                            <p>local de pré-natal</p>
+                            <div class="select-box">
+                                <select onChange={(r) => { setId_addres_pre_natal(r.target.value) }}>
+                                    {dataCm.map((i) => (
+                                    <option key={i.value} value={i.id}>
+                                    {i.name}
+                                    </option>
+                                ))}
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+
 
                     <button>EDITAR</button>
                 </form>

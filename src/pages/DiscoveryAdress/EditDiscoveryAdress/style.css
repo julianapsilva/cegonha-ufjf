@@ -1,0 +1,127 @@
+/* Import Google Font - Poppins */
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap');
+
+::selection {
+    color: #fff;
+    background: #062094;
+}
+
+.create-user {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 100vh;
+    margin-left: -200px;
+}
+
+.wrapper {
+    padding: 50px;
+    width: 40%;
+    padding-top: 40px;
+    border-radius: 7px;
+    background: #fff;
+    box-shadow: 7px 7px 20px rgba(0, 0, 0, 0.06);
+    border: 1px solid rgba(0, 0, 0, 0.09);
+    margin-bottom: 150px;
+    margin-top: 20px;
+}
+
+.wrapper header {
+    font-size: 28px;
+    font-weight: 500;
+    text-align: center;
+    color: #111827;
+}
+
+.wrapper form {
+    margin: 40px 0 20px 0;
+}
+
+form :where(input, select, button) {
+    width: 100%;
+    outline: none;
+    border-radius: 5px;
+    border: none;
+}
+
+form p {
+    font-size: 18px;
+    margin-bottom: 5px;
+}
+
+form input {
+    height: 47px;
+    font-size: 17px;
+    padding: 0 15px;
+    border: 1px solid #999;
+    margin-bottom: 15px;
+}
+
+form input:focus {
+    padding: 0 14px;
+    border: 2px solid #062094;
+}
+
+form .drop-list {
+    display: flex;
+    margin-top: 20px;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.drop-list .select-box {
+    display: flex;
+    width: 115px;
+    height: 45px;
+    align-items: center;
+    border-radius: 5px;
+    justify-content: center;
+    border: 1px solid #999;
+}
+
+.select-box img {
+    max-width: 21px;
+}
+
+.select-box select {
+    width: auto;
+    font-size: 16px;
+    background: none;
+    margin: 0 -5px 0 5px;
+}
+
+.select-box select::-webkit-scrollbar {
+    width: 8px;
+}
+
+.select-box select::-webkit-scrollbar-track {
+    background: #fff;
+}
+
+.select-box select::-webkit-scrollbar-thumb {
+    background: #888;
+    border-radius: 8px;
+    border-right: 2px solid #ffffff;
+}
+
+.drop-list .icon {
+    cursor: pointer;
+    margin-top: 30px;
+    font-size: 22px;
+}
+
+
+form button {
+    height: 52px;
+    color: #fff;
+    font-size: 16px;
+    cursor: pointer;
+    background: #062094;
+    transition: 0.3s ease;
+    font-weight: 500;
+    letter-spacing: 1.4px;
+}
+
+form button:hover {
+    background: #324bbb;
+}
