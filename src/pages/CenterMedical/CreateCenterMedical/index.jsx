@@ -1,172 +1,222 @@
-import React, { useState } from 'react';
-import { useNavigate  } from 'react-router-dom';
+import React from "react";
+import { useNavigate } from "react-router-dom";
 import "./style.css";
 import api from "../../../services/api";
-import Sidebar from '../../../Components/Sidebar';
+import { useForm } from "react-hook-form";
+import { yupResolver } from "@hookform/resolvers/yup";
+import axios from "axios";
+import schema from "./schema";
+import { cepMask } from "../../../utils/cepMask";
+import Sidebar from "../../../Components/Sidebar";
 
-export default function CreateCenterMedical(props) {
+export default function CreateUser() {
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+    setValue,
+    setFocus,
+  } = useForm({
+    resolver: yupResolver(schema),
+  });
+  const reload = () => {
+    window.location.reload();
+  };
 
-    const navigate = useNavigate();
-    
-    const [image, setImage] = useState('')
-    const [phone, setPhone] = useState('')
-    const [latitude, setLatitude] = useState(0)
-    const [longitude, setLongitude] = useState(0)
-    const [name, setName] = useState('')
-    const [street, setStreet] = useState('')
-    const [number, setNumber] = useState(0)
-    const [district, setDistrict] = useState('')
-    const [city, setCity] = useState('')
-    const [uf, setUf] = useState('')
-    const [cep, setCep] = useState('')
+  const submitForm = (data) => {
+    console.log("chamou?");
+    api.post("medical-center", data).then(
+      (res) => {
+        alert("SUCESSO!!! \n Cadastro realizado com sucesso!!!");
+        reload();
+      },
+      (err) => {
+        alert("Erro!!! \n O cadastro não foi realizado!!!", err);
+      }
+    );
+  };
 
-    const reload = () => {
+  const navigate = useNavigate();
 
-        window.location.reload();
-      };
-   
+  const verifyCEP = ({ target }) => {
+    const cep = target.value.replace(/\D/g, "");
+    axios.get(`https://viacep.com.br/ws/${cep}/json/`).then(({ data }) => {
+      setValue("street", data.logradouro);
+      setValue("district", data.bairro);
+      setValue("city", data.localidade);
+      setValue("uf", data.uf);
+      setValue("cep", target.value);
+      setFocus("number");
+    });
+  };
 
-    const handleSubmit = e => {
-        e.preventDefault();
-    
-        const values = {
-          image,
-          phone,
-          latitude,
-          longitude,
-          name,
-          street,
-          number, 
-          district, 
-          city,
-          uf, 
-          cep
-        };
-        if(
-            image &&
-            phone &&
-            latitude &&
-            longitude &&
-            name &&
-            street &&
-            number &&
-            district &&
-            city &&
-            uf &&
-            cep
-          ){
-        api.post("medical-center", values)
-          .then(res => {
-            alert("SUCESSO!!! \n Cadastro realizado com sucesso!!!");
-            navigate("/center-medical");
-          }, 
-          (err) => {alert("Erro!!! \n O cadastro não foi realizado!!!", err);
-         })} else {
-            alert('Preencha todos os campos de dados!');
-        };
-        
-          
-}
-
-    return (
-        <div> 
-            <Sidebar/>
-            <div className='create-user'>
-                <div class="wrapper">
-                    <header>Cadastrar novo Centro Médico</header>
-                    <form onSubmit={handleSubmit}>
-
-                        <div>
-                            <p>Imagem</p>
-                            <input type="text" onChange={(r) => { setImage(r.target.value) }} />
-                        </div>
-
-                        <div>
-                            <p>Nome</p>
-                            <input type="text" onChange={(r) => { setName(r.target.value) }} />
-                        </div>
-                        
-                        <div>
-                            <p>Telefone</p>
-                            <input type="text" onChange={(r) => { setPhone(r.target.value) }} />
-                        </div>
-
-                        <div>
-                            <p>Latitude</p>
-                            <input type="text" onChange={(r) => { setLatitude(r.target.value) }} />
-                        </div>
-
-                        <div>
-                            <p>Longitude</p>
-                            <input type="text" onChange={(r) => { setLongitude(r.target.value) }} />
-                        </div>
-
-                        <div>
-                            <p>Rua</p>
-                            <input type="text" onChange={(r) => { setStreet(r.target.value) }} />
-                        </div>
-
-                        <div>
-                            <p>Número</p>
-                            <input type="text" onChange={(r) => { setNumber(r.target.value) }} />
-                        </div>
-
-                        <div>
-                            <p>Bairro</p>
-                            <input type="text" onChange={(r) => { setDistrict(r.target.value) }} />
-                        </div>
-
-                        <div>
-                            <p>CEP</p>
-                            <input type="text" onChange={(r) => { setCep(r.target.value) }} />
-                        </div>
-
-                        <div>
-                            <p>Cidade</p>
-                            <input type="text" onChange={(r) => { setCity(r.target.value) }} />
-                        </div>
-
-                        <div class="drop-list">
-                            <div class="from">
-                                <p>Estado</p>
-                                <div class="select-box">
-                                    <select onChange={(r) => { setUf(r.target.value) }}>
-                                        <option value={"Acre (AC)"}>Acre (AC) </option>
-                                        <option value={"Alagoas (AL)"}>Alagoas (AL)</option>
-                                        <option value={"Amazonas (AM)"}>Amazonas (AM)</option>
-                                        <option value={"Bahia (BA)"}> Bahia (BA)</option>
-                                        <option value={"Ceará (CE)"}> Ceará	(CE)</option>
-                                        <option value={"Distrito Federal (DF)"}>Distrito Federal (DF)</option>
-                                        <option value={"Espírito Santo (ES)"}>Espírito Santo	(ES)</option>
-                                        <option value={"Goiás	(GO)"}>Goiás (GO)</option>
-                                        <option value={"Maranhão	(MA)"}>Maranhão	(MA) </option>
-                                        <option value={"Mato Grosso	(MT)"}> Mato Grosso	(MT)</option>
-                                        <option value={" Mato Grosso do Sul	(MS)"}> Mato Grosso do Sul	(MS)</option>
-                                        <option value={"Minas Gerais	(MG)"}>Minas Gerais	(MG) </option>
-                                        <option value={"Pará	(PA)"}>Pará	(PA) </option>
-                                        <option value={" Paraíba (PB)"}> Paraíba (PB) </option>
-                                        <option value={"Paraná (PR)"}>Paraná	(PR)</option>
-                                        <option value={"Pernambuco	(PE)"}> Pernambuco (PE)</option>
-                                        <option value={"Piauí	(PI)"}> Piauí	(PI)</option>
-                                        <option value={"Rio de Janeiro (RJ)"}> Rio de Janeiro	(RJ)</option>
-                                        <option value={"Rio Grande do Norte	(RN)"}>Rio Grande do Norte	(RN) </option>
-                                        <option value={" Rio Grande do Sul 	(RS)"}> Rio Grande do Sul (RS) </option>
-                                        <option value={"Rondônia	(RO)"}>Rondônia	(RO) </option>
-                                        <option value={"Roraima	(RR)"}> Roraima	(RR)</option>
-                                        <option value={"Santa Catarina (SC)"}> Santa Catarina (SC)</option>
-                                        <option value={"São Paulo (SP)"}> São Paulo (SP)</option>
-                                        <option value={"Sergipe	(SE)"}> Sergipe	(SE)</option>
-                                        <option value={"Tocantins	(TO)"}>Tocantins (TO)</option>
-                                    </select>
-                                </div>
-                            </div>
-                        </div>
-                        
-
-                        <button>ADICIONAR CENTRO MÉDICO</button>
-                    </form>
-                </div>
+  return (
+    <div>
+      <Sidebar />
+      <div className="create-user">
+        <div className="wrapper">
+          <header>Cadastrar novo centro médico</header>
+          <form onSubmit={handleSubmit(submitForm)}>
+            <div>
+              <p>Nome</p>
+              <input type="text" name="name" {...register("name")} />
+              <p className="validationError">
+                {" "}
+                {errors?.name && "Campo obrigatório"}{" "}
+              </p>
             </div>
+
+            <div>
+              <p>Imagem</p>
+              <input type="text" {...register("image")} />
+              <p className="validationError">
+                {" "}
+                {errors?.image && "Campo obrigatório"}{" "}
+              </p>
+            </div>
+
+            <div>
+              <p>Telefone</p>
+              <input type="text" {...register("phone")} />
+              <p className="validationError">
+                {" "}
+                {errors?.phone && "Campo obrigatório"}{" "}
+              </p>
+            </div>
+
+            <div>
+              <p>Latitude</p>
+              <input type="text" {...register("latitude")} />
+              <p className="validationError">
+                {" "}
+                {errors?.latitude && "Campo obrigatório"}{" "}
+              </p>
+            </div>
+
+            <div>
+              <p>Longitude</p>
+              <input type="text" {...register("longitude")} />
+              <p className="validationError">
+                {" "}
+                {errors?.longitude && "Campo obrigatório"}{" "}
+              </p>
+            </div>
+
+            <div>
+              <p>CEP</p>
+              <input
+                type="text"
+                name="cep"
+                {...register("cep")}
+                onBlur={verifyCEP}
+                onChange={(event) => cepMask(event)}
+              />
+              <p className="validationError">
+                {" "}
+                {errors?.cep && "Insira um CEP válido"}{" "}
+              </p>
+            </div>
+
+            <div>
+              <p>Rua</p>
+              <input type="text" name="street" {...register("street")} />
+              <p className="validationError">
+                {" "}
+                {errors?.street && "Campo obrigatório"}{" "}
+              </p>
+            </div>
+
+            <div>
+              <p>Número</p>
+              <input type="text" name="number" {...register("number")} />
+              <p className="validationError">
+                {" "}
+                {errors?.number &&
+                  "Campo obrigatório, insira apenas números."}{" "}
+              </p>
+            </div>
+
+            <div>
+              <p>Bairro</p>
+              <input type="text" name="district" {...register("district")} />
+              <p className="validationError">
+                {" "}
+                {errors?.district && "Campo obrigatório"}{" "}
+              </p>
+            </div>
+
+            <div>
+              <p>Cidade</p>
+              <input type="text" name="city" {...register("city")} />
+              <p className="validationError">
+                {" "}
+                {errors?.city && "Campo obrigatório"}{" "}
+              </p>
+            </div>
+
+            <div className="drop-list">
+              <div className="from">
+                <p>Estado</p>
+                <div className="select-box">
+                  <select {...register("uf")}>
+                    <option value={"Acre (AC)"}>Acre (AC) </option>
+                    <option value={"Alagoas (AL)"}>Alagoas (AL)</option>
+                    <option value={"Amazonas (AM)"}>Amazonas (AM)</option>
+                    <option value={"Bahia (BA)"}> Bahia (BA)</option>
+                    <option value={"Ceará (CE)"}> Ceará (CE)</option>
+                    <option value={"Distrito Federal (DF)"}>
+                      Distrito Federal (DF)
+                    </option>
+                    <option value={"Espírito Santo (ES)"}>
+                      Espírito Santo (ES)
+                    </option>
+                    <option value={"Goiás	(GO)"}>Goiás (GO)</option>
+                    <option value={"Maranhão	(MA)"}>Maranhão (MA) </option>
+                    <option value={"Mato Grosso	(MT)"}> Mato Grosso (MT)</option>
+                    <option value={" Mato Grosso do Sul	(MS)"}>
+                      {" "}
+                      Mato Grosso do Sul (MS)
+                    </option>
+                    <option value={"Minas Gerais	(MG)"}>
+                      Minas Gerais (MG){" "}
+                    </option>
+                    <option value={"Pará	(PA)"}>Pará (PA) </option>
+                    <option value={" Paraíba (PB)"}> Paraíba (PB) </option>
+                    <option value={"Paraná (PR)"}>Paraná (PR)</option>
+                    <option value={"Pernambuco	(PE)"}> Pernambuco (PE)</option>
+                    <option value={"Piauí	(PI)"}> Piauí (PI)</option>
+                    <option value={"Rio de Janeiro (RJ)"}>
+                      {" "}
+                      Rio de Janeiro (RJ)
+                    </option>
+                    <option value={"Rio Grande do Norte	(RN)"}>
+                      Rio Grande do Norte (RN){" "}
+                    </option>
+                    <option value={" Rio Grande do Sul 	(RS)"}>
+                      {" "}
+                      Rio Grande do Sul (RS){" "}
+                    </option>
+                    <option value={"Rondônia	(RO)"}>Rondônia (RO) </option>
+                    <option value={"Roraima	(RR)"}> Roraima (RR)</option>
+                    <option value={"Santa Catarina (SC)"}>
+                      {" "}
+                      Santa Catarina (SC)
+                    </option>
+                    <option value={"São Paulo (SP)"}> São Paulo (SP)</option>
+                    <option value={"Sergipe	(SE)"}> Sergipe (SE)</option>
+                    <option value={"Tocantins	(TO)"}>Tocantins (TO)</option>
+                  </select>
+                  <p className="validationError">
+                    {" "}
+                    {errors?.uf && "Campo obrigatório"}{" "}
+                  </p>
+                </div>
+              </div>
+            </div>
+            <button>ADICIONAR CENTRO MÉDICO</button>
+          </form>
         </div>
-    )
+      </div>
+    </div>
+  );
 }
