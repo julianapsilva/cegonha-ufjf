@@ -5,6 +5,7 @@ import Modal from 'react-modal';
 import CreateUser from '../CreateUser';
 import EditiUser from '../EditUser';
 import Adress from '../../Adress/ListAdress'
+import Sidebar from '../../../Components/Sidebar';
 
 
 const ListUsers = () => {
@@ -58,6 +59,8 @@ const ListUsers = () => {
     }
 
     return (
+        <div>
+            <Sidebar/>
         <div className='wrapper-users'>
             <h1>Usuários cadastrados</h1>
             <table>
@@ -106,7 +109,7 @@ const ListUsers = () => {
             </Modal>
         </div>
 
-
+        </div>
     );
 };
 

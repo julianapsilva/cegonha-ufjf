@@ -1,11 +1,13 @@
-import React, { useState } from 'react'
+import React from 'react'
 import { Link } from 'react-router-dom';
 
 
+
+
 export default function Sidebar() {
-
     
-
+    
+    const open  = localStorage.getItem("open")
     function dropDown() {
         // document.querySelector('#submenu').classList.toggle('hidden')
         // document.querySelector('#arrow').classList.toggle('rotate-0')
@@ -21,8 +23,8 @@ export default function Sidebar() {
             <span className="absolute text-white text-4xl top-5 left-4 cursor-pointer" onClick={Openbar()}>
                 <i className="bi bi-filter-left px-2 bg-gray-900 rounded-md"></i>
             </span>
-            <div className="sidebar fixed top-0 bottom-0 lg:left-0 left-[-300px]
-             duration-1000 p-2 w-[300px] overflow-y-auto text-center bg-gray-900 shadow h-screen">
+            <div className="w-[300px] sidebar fixed  top-0 bottom-0 lg:left-0 left-[-300px]
+             duration-1000 p-2  overflow-y-auto text-center bg-gray-900 shadow h-screen">
                 <div className="text-gray-100 text-xl">
                     <div className="p-2.5 mt-1 flex items-center rounded-md ">
                         {/* <i className="bi bi-app-indicator px-2 py-1 bg-blue-600 rounded-md"></i> */}
@@ -84,10 +86,12 @@ export default function Sidebar() {
                             </div>
                         </div>
                         <div className=" leading-7 text-left text-sm font-thin mt-2 w-4/5 mx-auto" id="submenu">
-                            <Link to="/test">
+                            <Link to="/cover-adress">
                                 <h1 className="cursor-pointer p-2 hover:bg-gray-700 rounded-md mt-1">Listar endereços</h1>
                             </Link>
+                            <Link to="/create-cover-adress">
                             <h1 className="cursor-pointer p-2 hover:bg-gray-700 rounded-md mt-1">Adicionar novo endereço</h1>
+                            </Link>
                         </div>
 
                         <div
@@ -102,16 +106,20 @@ export default function Sidebar() {
                             </div>
                         </div>
                         <div className=" leading-7 text-left text-sm font-thin mt-2 w-4/5 mx-auto" id="submenu">
-                            <h1 className="cursor-pointer p-2 hover:bg-gray-700 rounded-md mt-1">Listar áreas descobertas</h1>
-                            <h1 className="cursor-pointer p-2 hover:bg-gray-700 rounded-md mt-1">Adicionar nova área</h1>
+                            <Link to="/discovery-adress">
+                                <h1 className="cursor-pointer p-2 hover:bg-gray-700 rounded-md mt-1">Listar áreas descobertas</h1>
+                            </Link>
+                            <Link to="/create-discovery-adress">
+                                <h1 className="cursor-pointer p-2 hover:bg-gray-700 rounded-md mt-1">Adicionar nova área</h1>
+                            </Link>
                         </div>
 
 
 
-                        <div
+                        <div 
                             className="p-2.5 mt-3 flex items-center rounded-md px-4 duration-300 cursor-pointer 
-                             hover:bg-blue-600">
-                            <i className="bi bi-box-arrow-in-right"></i>
+                             hover:bg-blue-600" >
+                            <i className="bi bi-box-arrow-in-right" ></i>
                             <Link to="/login">
                             <span className="text-[15px] ml-4 text-gray-200">Sair</span>
                             </Link>

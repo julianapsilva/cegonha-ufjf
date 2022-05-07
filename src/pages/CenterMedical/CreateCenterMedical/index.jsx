@@ -7,6 +7,7 @@ import { yupResolver } from "@hookform/resolvers/yup";
 import axios from "axios";
 import schema from "./schema";
 import { cepMask } from "../../../utils/cepMask";
+import Sidebar from '../../../Components/Sidebar';
 
 export default function CreateUser() {
   const {

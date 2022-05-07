@@ -8,6 +8,7 @@ import axios from "axios";
 import schema from "./schema";
 import { cpfMask } from "../../../utils/cpfMask";
 import { cepMask } from "../../../utils/cepMask";
+import Sidebar from "../../../Components/Sidebar";
 
 export default function CreateUser() {
   const {
@@ -41,7 +42,7 @@ export default function CreateUser() {
       setValue("district", data.bairro);
       setValue("city", data.localidade);
       setValue("uf", data.uf);
-      setValue("cep", target.value)
+      setValue("cep", target.value);
       setFocus("number");
     });
   };

@@ -1,33 +1,33 @@
 import React, { useState, useEffect } from 'react';
 import api from '../../../services/api';
-import "./style.css";
+import "./style.css"
 import Modal from 'react-modal';
-import EditCenterMedical from '../EditCenterMedical';
+import EditDiscoverAdress from '../EditDiscoveryAdress';
 import Sidebar from '../../../Components/Sidebar';
 
 
 
-const ListCenterMedical = () => {
-    
+
+const ListDiscoveryAdress = () => {
     const [data, setData] = useState([])
 
     useEffect(() => {
         (async () => {
-            const { data } = await api.get('medical-center')
+            const { data } = await api.get("discovery-address")
             setData(data)
         })()
 
     }, [])
 
     const [modalIsOpen, setIsOpen] = React.useState(false);
-    const [idCenterMedical, setIdCenterMedical] = React.useState(false);
+    const [idDiscoverydAdress, setIdDiscoveryAdress] = React.useState(false);
 
-
-    function openModal(id) {
-        setIdCenterMedical(id)
+    function openModal(id){
+        setIdDiscoveryAdress(id)
         setIsOpen(true);
     }
-    
+
+ 
   
     function closeModal() {
         setIsOpen(false);
@@ -39,14 +39,14 @@ const ListCenterMedical = () => {
       };
       
     const handleDelete = (id, index) => {
-        const confirm = window.confirm(`Deseja realmente deletar o Centro Médico?`);
+        const confirm = window.confirm(`Deseja realmente deletar a área descoberta?`);
         if (confirm) {
-               api.delete("medical-center/" + id)
+            api.delete("discovery-address/" + id)
                .then(
                 data.splice(index, 1),
                 setData([...data]),
                 alert(
-                  "Centro Médico deletado com sucesso!"
+                  "Área deletado com sucesso!"
                  )
                )
                reload()    
@@ -57,24 +57,24 @@ const ListCenterMedical = () => {
         <div> 
             <Sidebar/>
             <div className='wrapper-users'>
-                <h1>Centros Médicos</h1>
+                <h1>Áreas descobertas</h1>
                 <table>
                     <thead>
                         <tr className='title'>
-                            <th>Image</th>
-                            <th>Endereço</th>
-                            <th>Telefone</th>
+                            <th>Bairro</th>
+                            <th>Região</th>
+                            <th>Cidade-UF</th>
                             <th>CEP</th>
                             <th>Editar</th>
                             <th>Excluir</th>
                         </tr></thead>
                     <tbody>
                         {
-                            data.map(({ id, image, street, number, phone, cep }, index) => (
+                            data.map(({ id, district, region, city, uf, cep}, index) => (
                                 <tr key={id}>
-                                    <td> <img src={image} style={{  width: "200px", height:"auto"}} /> </td>
-                                    <td>{street}, {number}</td>
-                                    <td>{phone}</td>
+                                    <td>{district}</td>
+                                    <td>{region}</td>
+                                    <td>{city}, {uf}</td>
                                     <td>{cep}</td>
                                     <td>
                                         <button className='bi bi-pencil' onClick={() => openModal(id)}></button>
@@ -94,9 +94,10 @@ const ListCenterMedical = () => {
                     onRequestClose={closeModal}
                 >
                     <button onClick={closeModal}>close</button>
-                    <EditCenterMedical idCenterMedical={idCenterMedical}/>
                     
-                </Modal>
+                            <EditDiscoverAdress idDiscoverydAdress={idDiscoverydAdress}/>
+                        
+                        </Modal>
             </div>
         </div>
 
@@ -104,4 +105,4 @@ const ListCenterMedical = () => {
     );
 };
 
-export default ListCenterMedical
+export default ListDiscoveryAdress
