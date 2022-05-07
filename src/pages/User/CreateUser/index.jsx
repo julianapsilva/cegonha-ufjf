@@ -48,10 +48,9 @@ export default function CreateUser() {
   };
 
   return (
-    <div>
+    <div className="create-user">
       <Sidebar />
 
-      <div className="create-user">
         <div className="wrapper">
           <header>Cadastrar novo usuário</header>
           <form onSubmit={handleSubmit(submitForm)}>
@@ -228,7 +227,6 @@ export default function CreateUser() {
             <button>ADICIONAR USUÁRIO</button>
           </form>
         </div>
-      </div>
     </div>
   );
 }
