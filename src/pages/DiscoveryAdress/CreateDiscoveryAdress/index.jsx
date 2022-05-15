@@ -1,169 +1,209 @@
-import React, { useState, useEffect } from 'react'
-import { useNavigate  } from 'react-router-dom';
-import "./style.css"
-import api from "../../../services/api"
-import Sidebar from '../../../Components/Sidebar';
+import React, { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
+import "./style.css";
+import api from "../../../services/api";
+import Sidebar from "../../../Components/Sidebar";
+import { useForm } from "react-hook-form";
+import { yupResolver } from "@hookform/resolvers/yup";
+import schema from "./schema";
+import { cepMask } from "../../../utils/cepMask";
+import axios from "axios";
 
 export default function CreateDiscoveryAdress() {
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+    setValue,
+  } = useForm({
+    resolver: yupResolver(schema),
+  });
+  const navigate = useNavigate();
 
-    const navigate = useNavigate();
-    
-    const [region, setRegion] = useState('')
-    const [district, setDistrict] = useState('')
-    const [city, setCity] = useState('')
-    const [uf, setUf] = useState('')
-    const [cep, setCep] = useState('')
-    const [id_addres_parto, setId_addres_parto] = useState('')
-    const [id_addres_pre_natal, setId_addres_pre_natal] = useState('')
+  const [data, setData] = useState([]);
 
+  useEffect(() => {
+    const fetchData = async () => {
+      const result = await api.get("medical-center");
+      setData(result.data);
+    };
+    fetchData();
+  }, []);
 
-    const [data, setData] = useState([]);
+  const verifyCEP = ({ target }) => {
+    const cep = target.value.replace(/\D/g, "");
+    axios.get(`https://viacep.com.br/ws/${cep}/json/`).then(({ data }) => {
+      setValue("street", data.logradouro);
+      setValue("district", data.bairro);
+      setValue("city", data.localidade);
+      setValue("uf", data.uf);
+      setValue("cep", target.value);
+    });
+  };
 
-    useEffect(() => {
-        const fetchData = async () => {
-          const result = await api.get("medical-center");
-          setData(result.data);
-        };
-        fetchData();
-      }, []);
+  const submitForm = (values) => {
+    api.post("discovery-address", values).then(
+      (res) => {
+        alert("SUCESSO!!! \n Área cadastrada com sucesso!!!");
+        navigate("/discovery-adress");
+      },
+      (err) => {
+        alert("Erro!!! \n O cadastro não foi realizado!!!", err);
+      }
+    );
+  };
 
-   
-    const handleSubmit = e => {
-        e.preventDefault();
-    
-        const values = {
-            region, 
-            district, 
-            city, 
-            uf, 
-            cep,
-            id_addres_parto, 
-            id_addres_pre_natal, 
-       };
-        if(
-            region && 
-            district &&
-            city &&
-            uf &&
-            cep &&
-            id_addres_parto &&
-            id_addres_pre_natal
-          ){
-        api.post("discovery-address", values)
-          .then(res => {
-            alert("SUCESSO!!! \n Área cadastrada com sucesso!!!");
-            navigate("/discovery-adress");
-          }, 
-          (err) => {alert("Erro!!! \n O cadastro não foi realizado!!!", err);
-         })} else {
-            alert('Preencha todos os campos de dados!');
-        };
-        
-          
-}
-
-    return (
-
-        <div> 
-            <Sidebar/>
-            <div className='create-user'>
-
-                <div class="wrapper">
-                    <header>Cadastrar nova Área Descoberta</header>
-                    <form onSubmit={handleSubmit}>
-
-                        <div>
-                            <p>Região</p>
-                            <input type="text"  onChange={(r) => { setRegion(r.target.value) }} />
-                        </div>
-
-                        <div>
-                            <p>CEP</p>
-                            <input type="text" onChange={(r) => { setCep(r.target.value) }} />
-                        </div>
-
-                        <div>
-                            <p>Bairro</p>
-                            <input type="text"  onChange={(r) => { setDistrict(r.target.value) }} />
-                        </div>
-
-                        <div>
-                            <p>Cidade</p>
-                            <input type="text" onChange={(r) => { setCity(r.target.value) }} />
-                        </div>
-
-
-                        <div class="drop-list">
-                            <div class="from">
-                                <p>Estado</p>
-                                <div class="select-box">
-                                    <select onChange={(r) => { setUf(r.target.value) }}>
-                                        <option value={"Acre (AC)"}>Acre (AC) </option>
-                                        <option value={"Alagoas (AL)"}>Alagoas (AL)</option>
-                                        <option value={"Amazonas (AM)"}>Amazonas (AM)</option>
-                                        <option value={"Bahia (BA)"}> Bahia (BA)</option>
-                                        <option value={"Ceará (CE)"}> Ceará	(CE)</option>
-                                        <option value={"Distrito Federal (DF)"}>Distrito Federal (DF)</option>
-                                        <option value={"Espírito Santo (ES)"}>Espírito Santo	(ES)</option>
-                                        <option value={"Goiás	(GO)"}>Goiás (GO)</option>
-                                        <option value={"Maranhão	(MA)"}>Maranhão	(MA) </option>
-                                        <option value={"Mato Grosso	(MT)"}> Mato Grosso	(MT)</option>
-                                        <option value={" Mato Grosso do Sul	(MS)"}> Mato Grosso do Sul	(MS)</option>
-                                        <option value={"Minas Gerais	(MG)"}>Minas Gerais	(MG) </option>
-                                        <option value={"Pará	(PA)"}>Pará	(PA) </option>
-                                        <option value={" Paraíba (PB)"}> Paraíba (PB) </option>
-                                        <option value={"Paraná (PR)"}>Paraná	(PR)</option>
-                                        <option value={"Pernambuco	(PE)"}> Pernambuco (PE)</option>
-                                        <option value={"Piauí	(PI)"}> Piauí	(PI)</option>
-                                        <option value={"Rio de Janeiro (RJ)"}> Rio de Janeiro	(RJ)</option>
-                                        <option value={"Rio Grande do Norte	(RN)"}>Rio Grande do Norte	(RN) </option>
-                                        <option value={" Rio Grande do Sul 	(RS)"}> Rio Grande do Sul (RS) </option>
-                                        <option value={"Rondônia	(RO)"}>Rondônia	(RO) </option>
-                                        <option value={"Roraima	(RR)"}> Roraima	(RR)</option>
-                                        <option value={"Santa Catarina (SC)"}> Santa Catarina (SC)</option>
-                                        <option value={"São Paulo (SP)"}> São Paulo (SP)</option>
-                                        <option value={"Sergipe	(SE)"}> Sergipe	(SE)</option>
-                                        <option value={"Tocantins	(TO)"}>Tocantins (TO)</option>
-                                    </select>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="drop-list2">
-                            <div class="from">
-                                <p>local de parto</p>
-                                <div class="select-box">
-                                    <select onChange={(r) => { setId_addres_parto(r.target.value) }}>
-                                        <option value={''}>{''} </option>
-                                        {data.map((i) => (
-                                        <option key={i.value} value={i.id}>
-                                        {i.name}
-                                        </option>
-                                    ))}
-                                    </select>
-                                </div>
-                            </div>
-                        </div>
-
-                        <div class="drop-list2">
-                            <div class="from">
-                                <p>local de pré-natal</p>
-                                <div class="select-box">
-                                    <select onChange={(r) => { setId_addres_pre_natal(r.target.value) }}>
-                                        <option value={''}>{''} </option>
-                                        {data.map((i) => (
-                                        <option key={i.value} value={i.id}>
-                                        {i.name}
-                                        </option>
-                                    ))}
-                                    </select>
-                                </div>
-                            </div>
-                        </div>
-
-                        <button>ADICIONAR ÁREA DESCOBERTA</button>
-                    </form>
-                </div>
+  return (
+    <div>
+      <Sidebar />
+      <div className="create-user">
+        <div class="wrapper">
+          <header>Cadastrar nova Área Descoberta</header>
+          <form onSubmit={handleSubmit(submitForm)}>
+            <div>
+              <p>Região</p>
+              <input type="text" {...register("region")} />
+              <p className="validationError">
+                {" "}
+                {errors?.region && "Insira uma região"}{" "}
+              </p>
             </div>
+
+            <div>
+              <p>CEP</p>
+              <input
+                type="text"
+                {...register("cep")}
+                onBlur={verifyCEP}
+                onChange={(event) => cepMask(event)}
+              />
+              <p className="validationError">
+                {" "}
+                {errors?.cep && "Insira um CEP válido"}{" "}
+              </p>
+            </div>
+
+            <div>
+              <p>Bairro</p>
+              <input type="text" {...register("district")} />
+              <p className="validationError">
+                {" "}
+                {errors?.district && "Campo obrigatório"}{" "}
+              </p>
+            </div>
+
+            <div>
+              <p>Cidade</p>
+              <input type="text" {...register("city")} />
+              <p className="validationError">
+                {" "}
+                {errors?.city && "Campo obrigatório"}{" "}
+              </p>
+            </div>
+
+            <div class="drop-list">
+              <div class="from">
+                <p>Estado</p>
+                <div class="select-box">
+                  <select {...register("uf")}>
+                    <option value={"Acre (AC)"}>Acre (AC) </option>
+                    <option value={"Alagoas (AL)"}>Alagoas (AL)</option>
+                    <option value={"Amazonas (AM)"}>Amazonas (AM)</option>
+                    <option value={"Bahia (BA)"}> Bahia (BA)</option>
+                    <option value={"Ceará (CE)"}> Ceará (CE)</option>
+                    <option value={"Distrito Federal (DF)"}>
+                      Distrito Federal (DF)
+                    </option>
+                    <option value={"Espírito Santo (ES)"}>
+                      Espírito Santo (ES)
+                    </option>
+                    <option value={"Goiás	(GO)"}>Goiás (GO)</option>
+                    <option value={"Maranhão	(MA)"}>Maranhão (MA) </option>
+                    <option value={"Mato Grosso	(MT)"}> Mato Grosso (MT)</option>
+                    <option value={" Mato Grosso do Sul	(MS)"}>
+                      {" "}
+                      Mato Grosso do Sul (MS)
+                    </option>
+                    <option value={"Minas Gerais	(MG)"}>
+                      Minas Gerais (MG){" "}
+                    </option>
+                    <option value={"Pará	(PA)"}>Pará (PA) </option>
+                    <option value={" Paraíba (PB)"}> Paraíba (PB) </option>
+                    <option value={"Paraná (PR)"}>Paraná (PR)</option>
+                    <option value={"Pernambuco	(PE)"}> Pernambuco (PE)</option>
+                    <option value={"Piauí	(PI)"}> Piauí (PI)</option>
+                    <option value={"Rio de Janeiro (RJ)"}>
+                      {" "}
+                      Rio de Janeiro (RJ)
+                    </option>
+                    <option value={"Rio Grande do Norte	(RN)"}>
+                      Rio Grande do Norte (RN){" "}
+                    </option>
+                    <option value={" Rio Grande do Sul 	(RS)"}>
+                      {" "}
+                      Rio Grande do Sul (RS){" "}
+                    </option>
+                    <option value={"Rondônia	(RO)"}>Rondônia (RO) </option>
+                    <option value={"Roraima	(RR)"}> Roraima (RR)</option>
+                    <option value={"Santa Catarina (SC)"}>
+                      {" "}
+                      Santa Catarina (SC)
+                    </option>
+                    <option value={"São Paulo (SP)"}> São Paulo (SP)</option>
+                    <option value={"Sergipe	(SE)"}> Sergipe (SE)</option>
+                    <option value={"Tocantins	(TO)"}>Tocantins (TO)</option>
+                  </select>
+                </div>
+                <p className="validationError">
+                  {" "}
+                  {errors?.uf && "Campo obrigatório"}{" "}
+                </p>
+              </div>
+            </div>
+            <div class="drop-list2">
+              <div class="from">
+                <p>local de parto</p>
+                <div class="select-box">
+                  <select {...register("id_addres_parto")}>
+                    <option value={""}>{""} </option>
+                    {data.map((i) => (
+                      <option key={i.value} value={i.id}>
+                        {i.name}
+                      </option>
+                    ))}
+                  </select>
+                </div>
+              </div>
+              <p className="validationError">
+                {" "}
+                {errors?.id_addres_parto && "Campo obrigatório"}{" "}
+              </p>
+            </div>
+
+            <div class="drop-list2">
+              <div class="from">
+                <p>local de pré-natal</p>
+                <div class="select-box">
+                  <select {...register("id_addres_pre_natal")}>
+                    <option value={""}>{""} </option>
+                    {data.map((i) => (
+                      <option key={i.value} value={i.id}>
+                        {i.name}
+                      </option>
+                    ))}
+                  </select>
+                </div>
+              </div>
+              <p className="validationError">
+                {" "}
+                {errors?.id_addres_pre_natal && "Campo obrigatório"}{" "}
+              </p>
+            </div>
+
+            <button>ADICIONAR ÁREA DESCOBERTA</button>
+          </form>
         </div>
-    )
+      </div>
+    </div>
+  );
 }
