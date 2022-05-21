@@ -25,9 +25,9 @@ export default function Sidebar() {
       >
         <div className="text-gray-100 text-xl">
           <div className="p-2.5 mt-1 flex items-center rounded-md ">
-            <h1 className="text-[15px]  ml-3 text-xl text-gray-200 font-bold text-center">
+            <p className="text-[15px]  ml-3 text-xl text-gray-200 font-bold text-center">
               Rede Cegonha
-            </h1>
+            </p>
             <i
               class="bi bi-x ml-20 cursor-pointer lg:hidden"
               onClick={() => Openbar()}
@@ -56,14 +56,14 @@ export default function Sidebar() {
               id="submenu"
             >
               <Link to="/users">
-                <h1 className="cursor-pointer p-2 hover:bg-gray-700 rounded-md mt-1">
+                <p className="cursor-pointer p-2 hover:bg-gray-700 rounded-md mt-1">
                   Listar usuários cadastrados
-                </h1>
+                </p>
               </Link>
               <Link to="/create-user">
-                <h1 className="cursor-pointer p-2 hover:bg-gray-700 rounded-md mt-1">
+                <p className="cursor-pointer p-2 hover:bg-gray-700 rounded-md mt-1">
                   Adicionar novo usuário
-                </h1>
+                </p>
               </Link>
             </div>
 
@@ -89,14 +89,14 @@ export default function Sidebar() {
               id="submenu"
             >
               <Link to="/center-medical">
-                <h1 className="cursor-pointer p-2 hover:bg-gray-700 rounded-md mt-1">
+                <p className="cursor-pointer p-2 hover:bg-gray-700 rounded-md mt-1">
                   Listar centros médicos
-                </h1>
+                </p>
               </Link>
               <Link to="/create-center-medical">
-                <h1 className="cursor-pointer p-2 hover:bg-gray-700 rounded-md mt-1">
+                <p className="cursor-pointer p-2 hover:bg-gray-700 rounded-md mt-1">
                   Adicionar novo centro médico
-                </h1>
+                </p>
               </Link>
             </div>
 
@@ -122,14 +122,14 @@ export default function Sidebar() {
               id="submenu"
             >
               <Link to="/cover-adress">
-                <h1 className="cursor-pointer p-2 hover:bg-gray-700 rounded-md mt-1">
+                <p className="cursor-pointer p-2 hover:bg-gray-700 rounded-md mt-1">
                   Listar endereços
-                </h1>
+                </p>
               </Link>
               <Link to="/create-cover-adress">
-                <h1 className="cursor-pointer p-2 hover:bg-gray-700 rounded-md mt-1">
+                <p className="cursor-pointer p-2 hover:bg-gray-700 rounded-md mt-1">
                   Adicionar novo endereço
-                </h1>
+                </p>
               </Link>
             </div>
 
@@ -155,14 +155,14 @@ export default function Sidebar() {
               id="submenu"
             >
               <Link to="/discovery-adress">
-                <h1 className="cursor-pointer p-2 hover:bg-gray-700 rounded-md mt-1">
+                <p className="cursor-pointer p-2 hover:bg-gray-700 rounded-md mt-1">
                   Listar áreas descobertas
-                </h1>
+                </p>
               </Link>
               <Link to="/create-discovery-adress">
-                <h1 className="cursor-pointer p-2 hover:bg-gray-700 rounded-md mt-1">
+                <p className="cursor-pointer p-2 hover:bg-gray-700 rounded-md mt-1">
                   Adicionar nova área
-                </h1>
+                </p>
               </Link>
             </div>
 

@@ -63,14 +63,16 @@ const ListUsers = () => {
               <th>Email</th>
               <th>CPF</th>
               <th>Editar</th>
-              <th>Eendereços</th>
+              <th>Endereços</th>
               <th>Excluir</th>
             </tr>
           </thead>
           <tbody>
             {data.map(({ id, name, email, cpf }, index) => (
               <tr key={id}>
-                <td>{name}</td>
+                <td>
+                  <div className="user-name-mobile-version">{name}</div>
+                </td>
                 <td>{email}</td>
                 <td>{cpf}</td>
                 <td>
