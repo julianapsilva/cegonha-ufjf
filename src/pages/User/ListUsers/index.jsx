@@ -6,6 +6,7 @@ import CreateUser from "../CreateUser";
 import EditiUser from "../EditUser";
 import Adress from "../../Adress/ListAdress";
 import Sidebar from "../../../Components/Sidebar";
+import { formatCpf } from "../../../utils/cpfMask";
 
 const ListUsers = () => {
   const [data, setData] = useState([]);
@@ -74,7 +75,7 @@ const ListUsers = () => {
                   <div className="user-name-mobile-version">{name}</div>
                 </td>
                 <td>{email}</td>
-                <td>{cpf}</td>
+                <td>{formatCpf(cpf)}</td>
                 <td>
                   <button
                     className="bi bi-pencil"
