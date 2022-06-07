@@ -123,6 +123,15 @@ form .drop-list {
     font-size: 22px;
 }
 
+.drop-select select {
+    background-color: #ffffff;
+    border: 1px solid #999;
+    margin-top: 7px;
+    padding: 10px 5px;
+    height: 47px;
+    font-size: 17px;
+  }
+
 
 form button {
     height: 52px;
