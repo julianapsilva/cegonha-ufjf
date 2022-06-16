@@ -6,12 +6,14 @@ import Sidebar from "../../../Components/Sidebar";
 import { useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import schema from "./schema";
-import Multiselect from "../../../Components/Multiselect/Multiselect";
+import CreatableSelect from "react-select/creatable";
 
 export default function CreateDiscoveryAdress() {
   const {
     register,
     handleSubmit,
+    getValues,
+    setValue,
     formState: { errors },
   } = useForm({
     resolver: yupResolver(schema),
@@ -19,14 +21,31 @@ export default function CreateDiscoveryAdress() {
   const navigate = useNavigate();
 
   const [data, setData] = useState([]);
+  const [inputValue, setInputValue] = useState("");
+  const [value, setValues] = useState([]);
+  const [option, setOptions] = useState([]);
 
   useEffect(() => {
     const fetchData = async () => {
+      const ops = [];
+      let { data } = await api.get("neighborhood");
+      data = data.sort();
+      data.forEach((d) => ops.push(createOption(d)));
+      setOptions(ops);
       const result = await api.get("medical-center");
       setData(result.data);
     };
     fetchData();
   }, []);
+
+  useEffect(() => {
+    setValue(
+      "district",
+      value.map(({ value }) => value)
+    );
+    console.log(getValues());
+
+  }, [value]);
 
   const submitForm = (values) => {
     api.post("discovery-address", values).then(
@@ -38,6 +57,20 @@ export default function CreateDiscoveryAdress() {
         alert("Erro!!! \n O cadastro não foi realizado!!!", err);
       }
     );
+  };
+  const createOption = (label) => ({
+    label,
+    value: label,
+  });
+
+  const handleChange2 = async () => {
+    if (!inputValue) return;
+    setInputValue("");
+    const newOption = createOption(inputValue)
+    await api.post("neighborhood", {name: newOption.value})
+    setValues([...value, newOption]);
+    setOptions([...option, newOption]);
+
   };
 
   return (
@@ -56,14 +89,24 @@ export default function CreateDiscoveryAdress() {
               </p>
             </div>
 
-            <Multiselect />
-
             <div>
-              <p>Bairro</p>
-              <input type="text" {...register("district")} />
+              <p>Bairro(s)</p>
+              <CreatableSelect
+                inputValue={inputValue}
+                isClearable
+                isMulti
+                onChange={(v) => {
+                  setValues(v);
+                }}
+                onInputChange={(input) => setInputValue(input)}
+                onCreateOption={handleChange2}
+                placeholder="Selecione o(s) bairro(s)"
+                value={value}
+                options={option}
+              />
               <p className="validationError">
                 {" "}
-                {errors?.district && "Campo obrigatório"}{" "}
+                {errors?.district && errors?.district.message}{" "}
               </p>
             </div>
 
