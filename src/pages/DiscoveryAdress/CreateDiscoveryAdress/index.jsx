@@ -7,6 +7,7 @@ import { useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import schema from "./schema";
 import CreatableSelect from "react-select/creatable";
+import getCities from '../../../utils/getCities'
 
 export default function CreateDiscoveryAdress() {
   const {
@@ -24,9 +25,12 @@ export default function CreateDiscoveryAdress() {
   const [inputValue, setInputValue] = useState("");
   const [value, setValues] = useState([]);
   const [option, setOptions] = useState([]);
+  const [cities, setCities] = useState([])
 
   useEffect(() => {
     const fetchData = async () => {
+      const c = await getCities("mg")
+      setCities(c)
       const ops = [];
       let { data } = await api.get("neighborhood");
       data = data.sort();
@@ -67,7 +71,7 @@ export default function CreateDiscoveryAdress() {
     if (!inputValue) return;
     setInputValue("");
     const newOption = createOption(inputValue)
-    await api.post("neighborhood", {name: newOption.value})
+    await api.post("neighborhood", { name: newOption.value })
     setValues([...value, newOption]);
     setOptions([...option, newOption]);
 
@@ -110,19 +114,14 @@ export default function CreateDiscoveryAdress() {
               </p>
             </div>
 
-            <div>
-              <p>Cidade</p>
-              <input type="text" {...register("city")} />
-              <p className="validationError">
-                {" "}
-                {errors?.city && "Campo obrigatório"}{" "}
-              </p>
-            </div>
-
-            <div className="drop-select">
+            <div className="drop-select" onChange={async () => {
+              const c = await getCities(getValues("uf"))
+              setCities(c)
+            }
+            }>
               <p>Estado</p>
               <div>
-                <select {...register("uf")}>
+                <select {...register("uf")} >
                   <option value={"AC"}>Acre (AC) </option>
                   <option value={"AL"}>Alagoas (AL)</option>
                   <option value={"AM"}>Amazonas (AM)</option>
@@ -134,7 +133,7 @@ export default function CreateDiscoveryAdress() {
                   <option value={"MA"}>Maranhão (MA) </option>
                   <option value={"MT"}> Mato Grosso (MT)</option>
                   <option value={"MS"}>Mato Grosso do Sul (MS)</option>
-                  <option value={"MG"}>Minas Gerais (MG) </option>
+                  <option value={"MG"} selected>Minas Gerais (MG) </option>
                   <option value={"PA"}>Pará (PA) </option>
                   <option value={"PB"}> Paraíba (PB) </option>
                   <option value={"PR"}>Paraná (PR)</option>
@@ -156,6 +155,25 @@ export default function CreateDiscoveryAdress() {
                 </p>
               </div>
             </div>
+
+
+            <div className="drop-select">
+              <p>Cidade</p>
+              <div>
+                <select {...register("city")}>
+                  {cities?.length > 0 &&
+                    cities?.map(city => <option key={city.id} value={city.nome}>{city.nome}</option>
+                    )
+                  }
+                </select>
+                <p className="validationError">
+                  {" "}
+                  {errors?.city && "Campo obrigatório"}{" "}
+                </p>
+              </div>
+            </div>
+
+
             <div class="drop-select">
               <p>Local de parto</p>
               <div>
