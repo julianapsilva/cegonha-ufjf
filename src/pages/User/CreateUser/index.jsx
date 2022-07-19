@@ -1,4 +1,4 @@
-import React from "react";
+import React, {useState} from "react";
 import { useNavigate } from "react-router-dom";
 import "./style.css";
 import api from "../../../services/api";
@@ -20,11 +20,13 @@ export default function CreateUser() {
   } = useForm({
     resolver: yupResolver(schema),
   });
-
+  const [valuePassword, setValueassword] = useState('');
   const submitForm = (data) => {
+    if(data.password === data.passwordConfirmation)
+    {
     data.cpf = data.cpf.match(/\d/g).join("");
     data.cep = data.cep.match(/\d/g).join("");
-    api.post("/user", data).then(
+    api.post("/user2", data).then(
       (res) => {
         alert("SUCESSO!!! \n Cadastro realizado com sucesso!!!");
         navigate("/users");
@@ -33,6 +35,9 @@ export default function CreateUser() {
         alert("Erro!!! \n O cadastro não foi realizado!!!", err);
       }
     );
+  }else{
+    setValueassword('As senhas tem que ser iguais')
+  }
   };
 
   const navigate = useNavigate();
@@ -91,6 +96,18 @@ export default function CreateUser() {
               {errors?.password &&
                 "A senha deve ter pelo menos 4 caracteres"}{" "}
             </p>
+            <p className="validationError">{valuePassword}</p>
+          </div>
+
+          <div>
+            <p>Confirme sua Senha</p>
+            <input type="password" name="passwordConfirmation" {...register("passwordConfirmation")} />
+            <p className="validationError">
+              {" "}
+              {errors?.passwordConfirmation &&
+                "A senha deve ter pelo menos 4 caracteres"}{" "}
+            </p>
+            <p className="validationError">{valuePassword}</p>
           </div>
 
           <div>
@@ -198,6 +215,23 @@ export default function CreateUser() {
               </p>
             </div>
           </div>
+
+          <div className="drop-select">
+            <p>Tipo de Usuário</p>
+            <div>
+              <select {...register("admin")}>
+                <option value={null}> Selecione </option>
+                <option value={true}> Administrador </option>
+                <option value={false}> Usuário comum </option>
+              </select>
+              <p className="validationError">
+                {null}
+                {errors?.admin && "Campo obrigatório"}{" "}
+              </p>
+            </div>
+          </div>
+
+
           <button>ADICIONAR USUÁRIO</button>
         </form>
       </div>

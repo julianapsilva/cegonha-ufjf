@@ -1,3 +1,4 @@
+import { yupResolver } from "@hookform/resolvers/yup";
 import * as yup from "yup";
 import { verifyCpf } from "../../../utils/cpfMask";
 
@@ -28,5 +29,7 @@ const schema = yup.object().shape({
     cpf: yup.string().isValidCpf().required(),
     number: yup.number().positive().integer().required(),
     password: yup.string().min(4).max(15).required(),
+    passwordConfirmation: yup.string().min(4).max(15).required(),
+    //admin: yup.boolean.required(),
   });
 export default schema

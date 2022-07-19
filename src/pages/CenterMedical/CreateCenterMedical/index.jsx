@@ -28,7 +28,7 @@ export default function CreateUser() {
     api.post("medical-center", data).then(
       (res) => {
         alert("SUCESSO!!! \n Cadastro realizado com sucesso!!!");
-        reload();
+        navigate("/center-medical")
       },
       (err) => {
         alert("Erro!!! \n O cadastro não foi realizado!!!", err);

@@ -51,7 +51,8 @@ export default function CreateDiscoveryAdress() {
 
   }, [value]);
 
-  const submitForm = (values) => {
+  const submitForm = async (values) => {
+    console.log(values)
     api.post("discovery-address", values).then(
       (res) => {
         alert("SUCESSO!!! \n Área cadastrada com sucesso!!!");
