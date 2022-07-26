@@ -13,7 +13,7 @@ export default function EditUser(props) {
 
     useEffect(() => {
         (async () => {
-            const { data } = await api.get("user/" + props.cpfUser)
+            const { data } = await api.get("userCpf/" + props.cpfUser)
             setData(data)
             setName(data[0].name)
             setUsername(data[0].username)
