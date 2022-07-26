@@ -28,7 +28,7 @@ const schema = yup.object().shape({
     email: yup.string().email().required(),
     cpf: yup.string().isValidCpf().required(),
     number: yup.number().positive().integer().required(),
-    password: yup.string().min(4).max(15).required(),
+    password: yup.string().min(8).max(15).required(),
     passwordConfirmation: yup.string().min(4).max(15).required(),
     //admin: yup.boolean.required(),
   });

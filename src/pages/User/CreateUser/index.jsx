@@ -9,6 +9,9 @@ import schema from "./schema";
 import { cpfMask } from "../../../utils/cpfMask";
 import { cepMask } from "../../../utils/cepMask";
 import Sidebar from "../../../Components/Sidebar";
+import { validationPassword } from "../validation";
+
+
 
 export default function CreateUser() {
   const {
@@ -21,8 +24,16 @@ export default function CreateUser() {
     resolver: yupResolver(schema),
   });
   const [valuePassword, setValueassword] = useState('');
+  const [errormessagePasswordValid, setErrormessagePasswordValid] = useState('');
+  const validPassword = (senha) =>{
+    if(validationPassword(senha) === false){
+        setErrormessagePasswordValid('Senha inválida')
+        return false
+    }
+    return true
+}
   const submitForm = (data) => {
-    if(data.password === data.passwordConfirmation)
+    if(data.password === data.passwordConfirmation && validPassword(data.password) === true)
     {
     data.cpf = data.cpf.match(/\d/g).join("");
     data.cep = data.cep.match(/\d/g).join("");
@@ -36,7 +47,7 @@ export default function CreateUser() {
       }
     );
   }else{
-    setValueassword('As senhas tem que ser iguais')
+    setValueassword('As senhas devem ser iguais')
   }
   };
 
@@ -94,9 +105,9 @@ export default function CreateUser() {
             <p className="validationError">
               {" "}
               {errors?.password &&
-                "A senha deve ter pelo menos 4 caracteres"}{" "}
+                "A senha deve ter pelo menos 8 caracteres"}{" "}
             </p>
-            <p className="validationError">{valuePassword}</p>
+            <p className="validationError">{errormessagePasswordValid}</p>
           </div>
 
           <div>
