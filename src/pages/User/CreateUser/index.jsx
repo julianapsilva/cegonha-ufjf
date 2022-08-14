@@ -9,7 +9,7 @@ import schema from "./schema";
 import { cpfMask } from "../../../utils/cpfMask";
 import { cepMask } from "../../../utils/cepMask";
 import Sidebar from "../../../Components/Sidebar";
-import { validationPassword } from "../validation";
+
 
 
 
@@ -24,31 +24,27 @@ export default function CreateUser() {
     resolver: yupResolver(schema),
   });
   const [valuePassword, setValueassword] = useState('');
-  const [errormessagePasswordValid, setErrormessagePasswordValid] = useState('');
-  const validPassword = (senha) =>{
-    if(validationPassword(senha) === false){
-        setErrormessagePasswordValid('Senha inválida')
-        return false
-    }
-    return true
-}
+  const [valid, setValid] = useState('');
+
+  const storePassword = async (value) => {
+    localStorage.setItem('password', value.currentTarget.value)
+  }
+
   const submitForm = (data) => {
-    if(data.password === data.passwordConfirmation && validPassword(data.password) === true)
-    {
+   
     data.cpf = data.cpf.match(/\d/g).join("");
     data.cep = data.cep.match(/\d/g).join("");
     api.post("/user2", data).then(
       (res) => {
         alert("SUCESSO!!! \n Cadastro realizado com sucesso!!!");
+        localStorage.removeItem('password')
         navigate("/users");
       },
       (err) => {
         alert("Erro!!! \n O cadastro não foi realizado!!!", err);
+        localStorage.removeItem('password')
       }
-    );
-  }else{
-    setValueassword('As senhas devem ser iguais')
-  }
+    )
   };
 
   const navigate = useNavigate();
@@ -65,6 +61,8 @@ export default function CreateUser() {
     });
   };
 
+
+
   return (
     <div className="create-user">
       <Sidebar />
@@ -74,7 +72,7 @@ export default function CreateUser() {
         <form onSubmit={handleSubmit(submitForm)}>
           <div>
             <p>Nome</p>
-            <input type="text" name="name" {...register("name")} />
+            <input type="text" name="name"  {...register("name")} />
             <p className="validationError">
               {" "}
               {errors?.name && "Campo obrigatório"}{" "}
@@ -101,13 +99,16 @@ export default function CreateUser() {
 
           <div>
             <p>Senha</p>
-            <input type="password" name="password" {...register("password")} />
+            <input type="password" name="password" {...register("password")} onChange={(event) => storePassword(event)} />
             <p className="validationError">
               {" "}
               {errors?.password &&
                 "A senha deve ter pelo menos 8 caracteres"}{" "}
             </p>
-            <p className="validationError">{errormessagePasswordValid}</p>
+            <p className="validationError">
+              {" "}
+              {errors?.password && errors?.password.message}
+            </p> 
           </div>
 
           <div>
@@ -116,9 +117,12 @@ export default function CreateUser() {
             <p className="validationError">
               {" "}
               {errors?.passwordConfirmation &&
-                "A senha deve ter pelo menos 4 caracteres"}{" "}
+                "A senha deve ter pelo menos 8 caracteres"}{" "}
             </p>
-            <p className="validationError">{valuePassword}</p>
+            <p className="validationError">
+              {" "}
+              {errors?.passwordConfirmation && errors?.passwordConfirmation.message}
+            </p> 
           </div>
 
           <div>

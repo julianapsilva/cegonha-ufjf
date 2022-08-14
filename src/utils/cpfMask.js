@@ -1,5 +1,4 @@
 export const cpfMask = (e) => {
-  e.currentTarget.maxLength = 14;
   let value = e.currentTarget.value;
   if (!value.match(/^(\d{3}).(\d{3}).(\d{3})-(\d{2})$/)) {
     value = value.replace(/\D/g, "");
@@ -17,7 +16,7 @@ export const formatCpf = (cpf) => {
 };
 
 export const verifyCpf = (cpf) => {
-  cpf = cpf.match(/\d/g).join("");
+  cpf = (cpf.match(/\d/g) || []).join("");
   var Soma;
   var Resto;
   Soma = 0;
