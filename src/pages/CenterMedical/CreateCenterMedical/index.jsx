@@ -7,6 +7,7 @@ import { yupResolver } from "@hookform/resolvers/yup";
 import axios from "axios";
 import schema from "./schema";
 import { cepMask } from "../../../utils/cepMask";
+import { phoneMask } from "../../../utils/phoneMask";
 import Sidebar from "../../../Components/Sidebar";
 
 export default function CreateUser() {
@@ -24,7 +25,6 @@ export default function CreateUser() {
   };
 
   const submitForm = (data) => {
-    console.log("chamou?");
     api.post("medical-center", data).then(
       (res) => {
         alert("SUCESSO!!! \n Cadastro realizado com sucesso!!!");
@@ -77,7 +77,10 @@ export default function CreateUser() {
 
             <div>
               <p>Telefone</p>
-              <input type="text" {...register("phone")} />
+              <input type="text"
+               {...register("phone")}
+               onChange={(event) => phoneMask(event)}
+                />
               <p className="validationError">
                 {" "}
                 {errors?.phone && "Campo obrigatório"}{" "}
@@ -131,8 +134,7 @@ export default function CreateUser() {
               <input type="text" name="number" {...register("number")} />
               <p className="validationError">
                 {" "}
-                {errors?.number &&
-                  "Campo obrigatório, insira apenas números."}{" "}
+                {errors?.number && errors?.number.message}{" "}
               </p>
             </div>
 
