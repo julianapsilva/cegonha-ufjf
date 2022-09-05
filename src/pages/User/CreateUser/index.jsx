@@ -100,11 +100,11 @@ export default function CreateUser() {
           <div>
             <p>Senha</p>
             <input type="password" name="password" {...register("password")} onChange={(event) => storePassword(event)} />
-            <p className="validationError">
+           {/*<p className="validationError">
               {" "}
               {errors?.password &&
                 "A senha deve ter pelo menos 8 caracteres"}{" "}
-            </p>
+              </p>*/}
             <p className="validationError">
               {" "}
               {errors?.password && errors?.password.message}
@@ -114,11 +114,6 @@ export default function CreateUser() {
           <div>
             <p>Confirme sua Senha</p>
             <input type="password" name="passwordConfirmation" {...register("passwordConfirmation")} />
-            <p className="validationError">
-              {" "}
-              {errors?.passwordConfirmation &&
-                "A senha deve ter pelo menos 8 caracteres"}{" "}
-            </p>
             <p className="validationError">
               {" "}
               {errors?.passwordConfirmation && errors?.passwordConfirmation.message}

@@ -1,10 +1,11 @@
 export function validationPassword (senha) {
-    var validation = false;
+    var validation = "Senha inválida";
     var letrasMaiusculas = /[A-Z]/;
     var letrasMinusculas = /[a-z]/;
     var numeros = /[0-9]/;
     var caracteresEspeciais = /[!|@|#|$|%|^|&|*|(|)|-|_]/;
     if (senha.length < 8) {
+      validation = "A senha deve ter pelo menos 8 caracteres";
       return validation;
     }
     var auxMaiuscula = 0;
@@ -21,7 +22,7 @@ export function validationPassword (senha) {
       if (auxMinuscula > 0) {
         if (auxNumero > 0) {
           if (auxEspecial) {
-            validation = true;
+            validation = "true";
           }
         }
       }

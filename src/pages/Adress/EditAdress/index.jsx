@@ -52,12 +52,6 @@ export default function EditAdress(props) {
       setValue("city", result.data[0].city);
       setValue("uf", result.data[0].uf);
       setValue("cep", result.data[0].cep);
-      {/*setStreet(result.data[0].street);
-      setNumber(result.data[0].number);
-      setDistrict(result.data[0].district);
-      setCity(result.data[0].city);
-      setUf(result.data[0].uf);
-    setCep(result.data[0].cep);*/}
     })();
   }, []);
 

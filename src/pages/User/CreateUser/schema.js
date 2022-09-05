@@ -14,13 +14,27 @@ function isValidCpf(cpf) {
     return true;
   });
 }
+/*function min8Password(password) {
+  return this.test("min8Password", password, function (value) {
+    const { path, createError } = this;
+    if (value.length < 8) {
+      return createError({
+        path,
+        message: "A senha deve ter pelo menos 8 caracteres"
+      });
+    }
+    return true;
+  });
+}*/
 function isValidPassword(password) {
   return this.test("isValidPassword", password, function (value) {
     const { path, createError } = this;
-    if (!validationPassword(value)) {
+    var msg = validationPassword(value)
+    console.log(msg)
+    if (msg != "true") {
       return createError({
         path,
-        message: "Senha inválida"
+        message: msg
       });
     }
     return true;
@@ -40,6 +54,7 @@ function confirmingPassword(password) {
 }
 yup.addMethod(yup.mixed, "isValidCpf", isValidCpf);
 yup.addMethod(yup.mixed, "isValidPassword", isValidPassword);
+/*yup.addMethod(yup.mixed, "min8Password", min8Password);*/
 yup.addMethod(yup.mixed, "confirmingPassword", confirmingPassword);
 
 const schema = yup.object().shape({

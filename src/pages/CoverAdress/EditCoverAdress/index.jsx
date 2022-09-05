@@ -55,17 +55,6 @@ export default function EditCoverAdress(props) {
       setValue("cep", result.data.cep);
       setValue("data.id_addres_parto", result.data.id_addres_parto);
       setValue("data.id_addres_pre_natal", result.data.id_addres_pre_natal);
-     
-
-      {/*setStreet(result.data.street);
-      setNumber_start(result.data.number_start);
-      setNumber_end(result.data.number_end);
-      setDistrict(result.data.district);
-      setCity(result.data.city);
-      setUf(result.data.uf);
-      setCep(result.data.cep);
-      setId_addres_parto(result.data.id_addres_parto);
-    setId_addres_pre_natal(result.data.id_addres_pre_natal);*/}
     })();
   }, []);
 
@@ -92,31 +81,6 @@ export default function EditCoverAdress(props) {
       }
     );
   };
-
-{/*const handleSubmit = (e) => {
-    e.preventDefault();
-
-    const values = {
-      street,
-      number_start,
-      number_end,
-      district,
-      city,
-      uf,
-      cep,
-      id_addres_parto,
-      id_addres_pre_natal,
-    };
-    api.put("cover-address/" + props.idCoverAdress, values).then(
-      (res) => {
-        alert("SUCESSO!!! \n Edição realizada com sucesso!!!");
-        reload();
-      },
-      (err) => {
-        alert("Erro!!! \n A edição não foi realizado!!!", err);
-      }
-    );
-  };*/}
 
   return (
     <div className="create-user">
