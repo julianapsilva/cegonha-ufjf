@@ -60,22 +60,18 @@ const ListDiscoveryAdress = () => {
                 <h1>Áreas descobertas</h1>
                 <table>
                     <thead>
-                        <tr className='title'>
-                            <th>Bairro</th>
+                        <tr className='title'>                     
                             <th>Região</th>
                             <th>Cidade-UF</th>
-                            <th>CEP</th>
                             <th>Editar</th>
                             <th>Excluir</th>
                         </tr></thead>
                     <tbody>
                         {
-                            data.map(({ id, district, region, city, uf, cep}, index) => (
+                            data.map(({ id, region, city, uf}, index) => (
                                 <tr key={id}>
-                                    <td>{district}</td>
                                     <td>{region}</td>
                                     <td>{city}, {uf}</td>
-                                    <td>{cep}</td>
                                     <td>
                                         <button className='bi bi-pencil' onClick={() => openModal(id)}></button>
                                     </td>

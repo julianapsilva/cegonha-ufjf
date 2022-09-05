@@ -2,10 +2,23 @@ import React, { useState, useEffect } from 'react'
 import "./style.css"
 import api from "../../../services/api"
 import { render } from '@testing-library/react'
+import { useForm } from "react-hook-form";
+import { yupResolver } from "@hookform/resolvers/yup";
+import schema from './schema';
+import { cpfMask } from "../../../utils/cpfMask";
+import { cepMask } from "../../../utils/cepMask";
 
 
 export default function EditUser(props) {
-    
+    const {
+        register,
+        handleSubmit,
+        formState: { errors },
+        setValue,
+        setFocus,
+      } = useForm({
+        resolver: yupResolver(schema),
+      });
     
     const [data, setData] = useState([])
 
@@ -15,10 +28,11 @@ export default function EditUser(props) {
         (async () => {
             const { data } = await api.get("userCpf/" + props.cpfUser)
             setData(data)
-            setName(data[0].name)
-            setUsername(data[0].username)
-            setCpf(data[0].cpf)
-            setEmail(data[0].email)
+            setValue("name", data[0].name);
+            setValue("username", data[0].username);
+            setValue("cpf", data[0].cpf);
+            setValue("email", data[0].email);
+
         })()
 
     }, [])
@@ -32,17 +46,9 @@ export default function EditUser(props) {
 
         window.location.reload();
       };
-
-
-    const handleSubmit = e => {
-        e.preventDefault();
     
-        const values = {
-          name,
-          username,
-          email,
-          cpf
-        };
+    const submitForm = (values) => {
+        console.log(values)
         api.put(`user2/` + `${data[0].id}`, values)
         .then(res => {
             alert("SUCESSO!!! \n Edição realizada com sucesso!!!");
@@ -50,42 +56,67 @@ export default function EditUser(props) {
           }, 
           (err) => {alert("Erro!!! \n Erro na edição!!!", err);
         });
-          
-      }
+    };
 
 
     return (
        
-        <div className='create-user'>
+      <div className='create-user'>
 
 
-            <div class="wrapper">
+        <div class="wrapper">
                 <header>Editar usuário</header>
-                <form onSubmit={handleSubmit}>
-                    <div>
-                        <p>Nome</p>
-                        <input type="text"  onChange={(r) => { setUsername(r.target.value) }} defaultValue={name} />
-                    </div>
+               
+        <form onSubmit={handleSubmit(submitForm)}>
+          <div>
+            <p>Nome</p>
+            <input type="text" name="name"  {...register("name")} />
+            <p className="validationError">
+              {" "}
+              {errors?.name && "Campo obrigatório"}{" "}
+            </p>
+          </div>
 
-                    <div>
-                        <p>Nome de usuário</p>
-                        <input type="text"  onChange={(r) => {setName(r.target.value) }} defaultValue={username} />
-                    </div>
+          <div>
+            <p>Nome de usuário</p>
+            <input type="text" name="username" {...register("username")} />
+            <p className="validationError">
+              {" "}
+              {errors?.username && "Campo obrigatório"}{" "}
+            </p>
+          </div>
 
-                    <div>
-                        <p>Email</p>
-                        <input type="email"  onChange={(r) => { setEmail(r.target.value) }} defaultValue={email} />
-                    </div>
+          <div>
+            <p>Email</p>
+            <input type="email" name="email" {...register("email")} />
+            <p className="validationError">
+              {" "}
+              {errors?.email && "Email inválido, campo obrigatório"}{" "}
+            </p>
+          </div>
 
-                    <div>
-                        <p>CPF</p>
-                        <input type="text"  onChange={(r) => { setCpf(r.target.value) }} defaultValue={cpf} />
-                    </div>
-
-                    <button>EDITAR</button>
-                </form>
-            </div>
-        </div>
+          <div>
+            <p>CPF</p>
+            <input
+              type="text"
+              name="cpf"
+              {...register("cpf")}
+              onClick={(event) => {
+                cpfMask(event);
+              }}
+              onChange={(event) => {
+                cpfMask(event);
+              }}
+            />
+            <p className="validationError">
+              {" "}
+              {errors?.cpf && errors?.cpf.message}
+            </p>
+          </div>
+          <button>EDITAR</button>
+        </form>
+         </div>
+    </div>
        
     )
 }

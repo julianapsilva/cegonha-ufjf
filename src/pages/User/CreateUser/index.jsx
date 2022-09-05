@@ -71,7 +71,7 @@ export default function CreateUser() {
         <header>Cadastrar novo usuário</header>
         <form onSubmit={handleSubmit(submitForm)}>
           <div>
-            <p>Nome</p>
+            <p>Nome Completo</p>
             <input type="text" name="name"  {...register("name")} />
             <p className="validationError">
               {" "}
@@ -245,8 +245,6 @@ export default function CreateUser() {
               </p>
             </div>
           </div>
-
-
           <button>ADICIONAR USUÁRIO</button>
         </form>
       </div>

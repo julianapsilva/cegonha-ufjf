@@ -1,4 +1,5 @@
 export const cpfMask = (e) => {
+  e.currentTarget.maxLength = 14;
   let value = e.currentTarget.value;
   if (!value.match(/^(\d{3}).(\d{3}).(\d{3})-(\d{2})$/)) {
     value = value.replace(/\D/g, "");

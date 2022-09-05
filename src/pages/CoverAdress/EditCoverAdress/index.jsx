@@ -1,8 +1,21 @@
 import React, { useState, useEffect } from "react";
 import "./style.css";
 import api from "../../../services/api";
+import { useForm } from "react-hook-form";
+import { yupResolver } from "@hookform/resolvers/yup";
+import schema from "../CreateCoverAdress/schema";
+import { cepMask } from "../../../utils/cepMask";
 
 export default function EditCoverAdress(props) {
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+    setValue,
+    setFocus,
+  } = useForm({
+    resolver: yupResolver(schema),
+  });
   const reload = () => {
     window.location.reload();
   };
@@ -32,8 +45,19 @@ export default function EditCoverAdress(props) {
     (async () => {
       const result = await api.get("cover-address/" + props.idCoverAdress);
       setData(result);
+      console.log(data)
+      setValue("street", result.data.street);
+      setValue("number_start", result.data.number_start);
+      setValue("number_end", result.data.number_end);
+      setValue("district", result.data.district);
+      setValue("city", result.data.city);
+      setValue("uf", result.data.uf);
+      setValue("cep", result.data.cep);
+      setValue("data.id_addres_parto", result.data.id_addres_parto);
+      setValue("data.id_addres_pre_natal", result.data.id_addres_pre_natal);
+     
 
-      setStreet(result.data.street);
+      {/*setStreet(result.data.street);
       setNumber_start(result.data.number_start);
       setNumber_end(result.data.number_end);
       setDistrict(result.data.district);
@@ -41,11 +65,35 @@ export default function EditCoverAdress(props) {
       setUf(result.data.uf);
       setCep(result.data.cep);
       setId_addres_parto(result.data.id_addres_parto);
-      setId_addres_pre_natal(result.data.id_addres_pre_natal);
+    setId_addres_pre_natal(result.data.id_addres_pre_natal);*/}
     })();
   }, []);
 
-  const handleSubmit = (e) => {
+  const verifyCEP = ({ target }) => {
+    const cep = target.value.replace(/\D/g, "");
+    api.get(`https://viacep.com.br/ws/${cep}/json/`).then(({ data }) => {
+      setValue("street", data.logradouro);
+      setValue("district", data.bairro);
+      setValue("city", data.localidade);
+      setValue("uf", data.uf);
+      setValue("cep", target.value);
+      setFocus("number");
+    });
+  };
+
+  const submitForm = (values) => {
+    api.put("cover-address/" + props.idCoverAdress, values).then(
+      (res) => {
+        alert("SUCESSO!!! \n Edição realizada com sucesso!!!");
+        reload();
+      },
+      (err) => {
+        alert("Erro!!! \n A edição não foi realizado!!!", err);
+      }
+    );
+  };
+
+{/*const handleSubmit = (e) => {
     e.preventDefault();
 
     const values = {
@@ -68,88 +116,78 @@ export default function EditCoverAdress(props) {
         alert("Erro!!! \n A edição não foi realizado!!!", err);
       }
     );
-  };
+  };*/}
 
   return (
     <div className="create-user">
       <div class="wrapper">
         <header>Editar Endereço Coberto</header>
-        <form onSubmit={handleSubmit}>
-          <div>
-            <p>Rua</p>
-            <input
-              type="text"
-              defaultValue={street}
-              onChange={(r) => {
-                setStreet(r.target.value);
-              }}
-            />
-          </div>
+        <form onSubmit={handleSubmit(submitForm)}>
+            <div>
+              <p>Rua</p>
+              <input type="text" {...register("street")} />
+              <p className="validationError">
+                {" "}
+                {errors?.street && "Campo obrigatório"}{" "}
+              </p>
+            </div>
 
-          <div>
-            <p>Numero inicial</p>
-            <input
-              type="text"
-              defaultValue={number_start}
-              onChange={(r) => {
-                setNumber_start(r.target.value);
-              }}
-            />
-          </div>
+            <div>
+              <p>Numero inicial</p>
+              <input type="text" {...register("number_start")} />
+              <p className="validationError">
+                {" "}
+                {errors?.number_start &&
+                  "Campo obrigatório, insira apenas números."}{" "}
+              </p>
+            </div>
 
-          <div>
-            <p>Numero final</p>
-            <input
-              type="text"
-              defaultValue={number_end}
-              onChange={(r) => {
-                setNumber_end(r.target.value);
-              }}
-            />
-          </div>
+            <div>
+              <p>Número final</p>
+              <input type="text" {...register("number_end")} />
+              <p className="validationError">
+                {" "}
+                {errors?.number_end &&
+                  "Campo obrigatório, insira apenas números."}{" "}
+              </p>
+            </div>
 
-          <div>
-            <p>CEP</p>
-            <input
-              type="text"
-              defaultValue={cep}
-              onChange={(r) => {
-                setCep(r.target.value);
-              }}
-            />
-          </div>
+            <div>
+              <p>CEP</p>
+              <input
+                type="text"
+                {...register("cep")}
+                onBlur={verifyCEP}
+                onChange={(event) => cepMask(event)}
+              />
+              <p className="validationError">
+                {" "}
+                {errors?.cep && "Insira um CEP válido"}{" "}
+              </p>
+            </div>
 
-          <div>
-            <p>Bairro</p>
-            <input
-              type="text"
-              defaultValue={district}
-              onChange={(r) => {
-                setDistrict(r.target.value);
-              }}
-            />
-          </div>
+            <div>
+              <p>Bairro</p>
+              <input type="text" {...register("district")} />
+              <p className="validationError">
+                {" "}
+                {errors?.district && "Campo obrigatório"}{" "}
+              </p>
+            </div>
 
-          <div>
-            <p>Cidade</p>
-            <input
-              type="text"
-              defaultValue={city}
-              onChange={(r) => {
-                setCity(r.target.value);
-              }}
-            />
-          </div>
+            <div>
+              <p>Cidade</p>
+              <input type="text" {...register("city")} />
+              <p className="validationError">
+                {" "}
+                {errors?.city && "Campo obrigatório"}{" "}
+              </p>
+            </div>
 
-          <div class="drop-list">
-            <div class="from">
+            <div className="drop-select">
               <p>Estado</p>
-              <div class="select-box">
-                <select
-                  onChange={(r) => {
-                    setUf(r.target.value);
-                  }}
-                >
+              <div>
+                <select {...register("uf")}>
                   <option value={"AC"}>Acre (AC) </option>
                   <option value={"AL"}>Alagoas (AL)</option>
                   <option value={"AM"}>Amazonas (AM)</option>
@@ -177,19 +215,17 @@ export default function EditCoverAdress(props) {
                   <option value={"SE"}> Sergipe (SE)</option>
                   <option value={"TO"}>Tocantins (TO)</option>
                 </select>
+                <p className="validationError">
+                  {" "}
+                  {errors?.uf && "Campo obrigatório"}{" "}
+                </p>
               </div>
             </div>
-          </div>
-
-          <div class="drop-list2">
-            <div class="from">
-              <p>local de parto</p>
-              <div class="select-box">
-                <select
-                  onChange={(r) => {
-                    setId_addres_parto(r.target.value);
-                  }}
-                >
+            <div class="drop-select">
+              <p>Local de parto</p>
+              <div>
+                <select {...register("id_addres_parto")}>
+                  <option value={""}>{""} </option>
                   {dataCm.map((i) => (
                     <option key={i.value} value={i.id}>
                       {i.name}
@@ -197,18 +233,17 @@ export default function EditCoverAdress(props) {
                   ))}
                 </select>
               </div>
+              <p className="validationError">
+                {" "}
+                {errors?.id_addres_parto && "Campo obrigatório"}{" "}
+              </p>
             </div>
-          </div>
 
-          <div class="drop-list2">
-            <div class="from">
-              <p>local de pré-natal</p>
-              <div class="select-box">
-                <select
-                  onChange={(r) => {
-                    setId_addres_pre_natal(r.target.value);
-                  }}
-                >
+            <div class="drop-select">
+              <p>Local de pré-natal</p>
+              <div>
+                <select {...register("id_addres_pre_natal")}>
+                  <option value={""}>{""} </option>
                   {dataCm.map((i) => (
                     <option key={i.value} value={i.id}>
                       {i.name}
@@ -216,11 +251,14 @@ export default function EditCoverAdress(props) {
                   ))}
                 </select>
               </div>
+              <p className="validationError">
+                {" "}
+                {errors?.id_addres_pre_natal && "Campo obrigatório"}{" "}
+              </p>
             </div>
-          </div>
 
-          <button>EDITAR</button>
-        </form>
+            <button>EDITAR</button>
+          </form>
       </div>
     </div>
   );

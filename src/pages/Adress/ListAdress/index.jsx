@@ -21,7 +21,7 @@ const ListAdress = (props) => {
 
     useEffect(() => {
         (async () => {
-            const { data } = await api.get("user/" + props.cpfUser )
+            const { data } = await api.get("userCpf/" + props.cpfUser )
             setData(data)
             setIdUser(data[0].id)
         })()

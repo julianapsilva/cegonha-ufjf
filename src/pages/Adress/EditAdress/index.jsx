@@ -1,10 +1,36 @@
 import React, { useState, useEffect } from "react";
 import "./style.css";
 import api from "../../../services/api";
+import { useForm } from "react-hook-form";
+import { yupResolver } from "@hookform/resolvers/yup";
+import { cepMask } from "../../../utils/cepMask";
+import schema from "../CreateAdress/schema";
 
 export default function EditAdress(props) {
+
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+    setValue,
+    setFocus,
+  } = useForm({
+    resolver: yupResolver(schema),
+  });
   const reload = () => {
     window.location.reload();
+  };
+
+  const verifyCEP = ({ target }) => {
+    const cep = target.value.replace(/\D/g, "");
+    api.get(`https://viacep.com.br/ws/${cep}/json/`).then(({ data }) => {
+      setValue("street", data.logradouro);
+      setValue("district", data.bairro);
+      setValue("city", data.localidade);
+      setValue("uf", data.uf);
+      setValue("cep", target.value);
+      setFocus("number");
+    });
   };
 
   const [data, setData] = useState([]);
@@ -20,27 +46,23 @@ export default function EditAdress(props) {
     (async () => {
       const result = await api.get("adress/" + props.idAdress);
       setData(result);
-      setStreet(result.data[0].street);
+      setValue("street", result.data[0].street);
+      setValue("number", result.data[0].number);
+      setValue("district", result.data[0].district);
+      setValue("city", result.data[0].city);
+      setValue("uf", result.data[0].uf);
+      setValue("cep", result.data[0].cep);
+      {/*setStreet(result.data[0].street);
       setNumber(result.data[0].number);
       setDistrict(result.data[0].district);
       setCity(result.data[0].city);
       setUf(result.data[0].uf);
-      setCep(result.data[0].cep);
+    setCep(result.data[0].cep);*/}
     })();
   }, []);
 
-  const handleSubmit = (e) => {
-    e.preventDefault();
-
-    const values = {
-      street,
-      number,
-      district,
-      cep,
-      city,
-      uf,
-    };
-    api.put("adress/" + props.idAdress + "/" + props.idUser, values).then(
+  const submitForm = (data) => {
+    api.put("adress/" + props.idAdress + "/" + props.idUser, data).then(
       (res) => {
         alert("SUCESSO!!! \n Edição realizada com sucesso!!!");
         reload();
@@ -51,78 +73,70 @@ export default function EditAdress(props) {
     );
   };
 
+
   return (
     <div className="create-user">
       <div class="wrapper">
         <header>Editar endreço</header>
-        <form onSubmit={handleSubmit}>
-          <div>
-            <p>Rua</p>
-            <input
-              type="text"
-              fullWidth
-              defaultValue={street}
-              onChange={(r) => {
-                setStreet(r.target.value);
-              }}
-            />
-          </div>
-
-          <div>
-            <p>Número</p>
-            <input
-              type="text"
-              defaultValue={number}
-              onChange={(r) => {
-                setNumber(r.target.value);
-              }}
-            />
-          </div>
-
-          <div>
-            <p>Bairro</p>
-            <input
-              type="text"
-              defaultValue={district}
-              onChange={(r) => {
-                setDistrict(r.target.value);
-              }}
-            />
-          </div>
-
+        <form onSubmit={handleSubmit(submitForm)}>
           <div>
             <p>CEP</p>
             <input
               type="text"
-              defaultValue={cep}
-              onChange={(r) => {
-                setCep(r.target.value);
-              }}
+              name="cep"
+              {...register("cep")}
+              onBlur={verifyCEP}
+              onChange={(event) => cepMask(event)}
             />
+            <p className="validationError">
+              {" "}
+              {errors?.cep && "Insira um CEP válido"}{" "}
+            </p>
+          </div>
+
+          <div>
+            <p>Rua</p>
+            <input type="text" name="street" {...register("street")} />
+            <p className="validationError">
+              {" "}
+              {errors?.street && "Campo obrigatório"}{" "}
+            </p>
+          </div>
+
+          <div>
+            <p>Número</p>
+            <input type="text" name="number" {...register("number")} />
+            <p className="validationError">
+              {" "}
+              {errors?.number &&
+                "Campo obrigatório, insira apenas números."}{" "}
+            </p>
+          </div>
+
+          <div>
+            <p>Bairro</p>
+            <input type="text" name="district" {...register("district")} />
+            <p className="validationError">
+              {" "}
+              {errors?.district && "Campo obrigatório"}{" "}
+            </p>
           </div>
 
           <div>
             <p>Cidade</p>
-            <input
-              type="text"
-              defaultValue={city}
-              onChange={(r) => {
-                setCity(r.target.value);
-              }}
-            />
+            <input type="text" name="city" {...register("city")} />
+            <p className="validationError">
+              {" "}
+              {errors?.city && "Campo obrigatório"}{" "}
+            </p>
           </div>
 
-          <div class="drop-list">
-            <div class="from">
+          <div className="drop-list">
+            <div className="from">
               <p>Estado</p>
-              {/*<input type="text" onChange={(r) => { setUf(r.target.value) }} />*/}
-              <div class="select-box">
-                <select
-                  onChange={(r) => {
-                    setUf(r.target.value);
-                  }}
-                >
-                  <option value={"AC"}>Acre (AC) </option>
+              <div className="select-box">
+                <select {...register("uf")}>
+                <option value={"AC"}>Acre (AC) </option>
                   <option value={"AL"}>Alagoas (AL)</option>
                   <option value={"AM"}>Amazonas (AM)</option>
                   <option value={"BA"}> Bahia (BA)</option>
@@ -149,6 +163,10 @@ export default function EditAdress(props) {
                   <option value={"SE"}> Sergipe (SE)</option>
                   <option value={"TO"}>Tocantins (TO)</option>
                 </select>
+                <p className="validationError">
+                  {" "}
+                  {errors?.uf && "Campo obrigatório"}{" "}
+                </p>
               </div>
             </div>
           </div>
