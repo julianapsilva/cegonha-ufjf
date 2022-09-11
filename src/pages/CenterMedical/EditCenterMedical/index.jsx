@@ -55,7 +55,7 @@ export default function EditCenterMedical(props) {
 
   useEffect(() => {
     (async () => {
-      const result = await api.get("medical-center/" + props.idCenterMedical);
+      const result = await api.get("medical-center-id/" + props.idCenterMedical);
       setValue("image", result.data.image);
       setValue("name", result.data.name);
       setValue("phone", result.data.phone);
