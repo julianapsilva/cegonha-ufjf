@@ -8,6 +8,7 @@ import { yupResolver } from "@hookform/resolvers/yup";
 import schema from "./schema";
 import { cepMask } from "../../../utils/cepMask";
 import axios from "axios";
+import getCities from '../../../utils/getCities'
 
 export default function CreateCoverAdress(props) {
   const {
@@ -23,11 +24,14 @@ export default function CreateCoverAdress(props) {
   const navigate = useNavigate();
 
   const [data, setData] = useState([]);
+  const [cities, setCities] = useState([]);
 
   useEffect(() => {
     const fetchData = async () => {
       const result = await api.get("medical-center");
       setData(result.data);
+      const c = await getCities("mg")
+      setCities(c)
     };
     fetchData();
   }, []);
@@ -115,13 +119,21 @@ export default function CreateCoverAdress(props) {
               </p>
             </div>
 
-            <div>
+
+            <div className="drop-select">
               <p>Cidade</p>
-              <input type="text" {...register("city")} />
-              <p className="validationError">
-                {" "}
-                {errors?.city && "Campo obrigatório"}{" "}
-              </p>
+              <div>
+                <select {...register("city")}>
+                  {cities?.length > 0 &&
+                    cities?.map(city => <option key={city.id} value={city.nome}>{city.nome}</option>
+                    )
+                  }
+                </select>
+                <p className="validationError">
+                  {" "}
+                  {errors?.city && "Campo obrigatório"}{" "}
+                </p>
+              </div>
             </div>
 
             <div className="drop-select">

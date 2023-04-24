@@ -25,12 +25,12 @@ export default function CreateDiscoveryAdress() {
   const [inputValue, setInputValue] = useState("");
   const [value, setValues] = useState([]);
   const [option, setOptions] = useState([]);
-  const [cities, setCities] = useState([])
+  const [cities, setCities] = useState([]);
 
   useEffect(() => {
     const fetchData = async () => {
-      const c = await getCities("mg")
-      setCities(c)
+      const c = await getCities("mg");
+      setCities(c);
       const ops = [];
       let { data } = await api.get("neighborhood");
       data = data.sort();
@@ -47,8 +47,6 @@ export default function CreateDiscoveryAdress() {
       "district",
       value.map(({ value }) => value)
     );
-    console.log(getValues());
-
   }, [value]);
 
   const submitForm = async (values) => {

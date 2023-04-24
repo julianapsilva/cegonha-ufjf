@@ -5,6 +5,7 @@ import { useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { cepMask } from "../../../utils/cepMask";
 import schema from "../CreateAdress/schema";
+import getCities from "../../../utils/getCities";
 
 export default function EditAdress(props) {
 
@@ -41,11 +42,14 @@ export default function EditAdress(props) {
   const [city, setCity] = useState("");
   const [uf, setUf] = useState("");
   const [cep, setCep] = useState("");
+  const [cities, setCities] = useState([]);
 
   useEffect(() => {
     (async () => {
       const result = await api.get("adress/" + props.idAdress);
       setData(result);
+      const c = await getCities("mg");
+      setCities(c);
       setValue("street", result.data[0].street);
       setValue("number", result.data[0].number);
       setValue("district", result.data[0].district);
@@ -116,13 +120,22 @@ export default function EditAdress(props) {
             </p>
           </div>
 
-          <div>
+          <div className="drop-select">
             <p>Cidade</p>
-            <input type="text" name="city" {...register("city")} />
-            <p className="validationError">
-              {" "}
-              {errors?.city && "Campo obrigatório"}{" "}
-            </p>
+            <div>
+              <select {...register("city")}>
+                {cities?.length > 0 &&
+                  cities?.map((city) => (
+                    <option key={city.id} value={city.nome}>
+                      {city.nome}
+                    </option>
+                  ))}
+              </select>
+              <p className="validationError">
+                {" "}
+                {errors?.city && "Campo obrigatório"}{" "}
+              </p>
+            </div>
           </div>
 
           <div className="drop-list">

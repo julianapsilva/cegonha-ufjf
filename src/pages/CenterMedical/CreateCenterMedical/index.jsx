@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import "./style.css";
 import api from "../../../services/api";
@@ -9,6 +9,7 @@ import schema from "./schema";
 import { cepMask } from "../../../utils/cepMask";
 import { phoneMask } from "../../../utils/phoneMask";
 import Sidebar from "../../../Components/Sidebar";
+import getCities from '../../../utils/getCities'
 
 export default function CreateUser() {
   const {
@@ -20,6 +21,17 @@ export default function CreateUser() {
   } = useForm({
     resolver: yupResolver(schema),
   });
+  const [cities, setCities] = useState([]);
+
+  useEffect(() => {
+    const fetchData = async () => {
+      const c = await getCities("mg")
+       setCities(c);
+      setCities(c)
+    };
+    fetchData();
+  }, []);
+
   const reload = () => {
     window.location.reload();
   };
@@ -147,13 +159,20 @@ export default function CreateUser() {
               </p>
             </div>
 
-            <div>
+            <div className="drop-select">
               <p>Cidade</p>
-              <input type="text" name="city" {...register("city")} />
-              <p className="validationError">
-                {" "}
-                {errors?.city && "Campo obrigatório"}{" "}
-              </p>
+              <div>
+                <select {...register("city")}>
+                  {cities?.length > 0 &&
+                    cities?.map(city => <option key={city.id} value={city.nome}>{city.nome}</option>
+                    )
+                  }
+                </select>
+                <p className="validationError">
+                  {" "}
+                  {errors?.city && "Campo obrigatório"}{" "}
+                </p>
+              </div>
             </div>
 
             <div className="drop-select">

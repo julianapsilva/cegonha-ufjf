@@ -26,6 +26,12 @@ export default function EditDiscoverAdress(props) {
   const [value, setValues] = useState([]);
   const [option, setOptions] = useState([]);
   const [cities, setCities] = useState([]);
+  const [region, setRegion] = useState();
+  const [districtIn, setFistrictIn] = useState([]);
+  const [controler, setControler] = useState([]);
+  const [errorMessage, setErrorMessage] = useState("");
+  const [size, setSize] = useState(0);
+  let control = [];
 
   useEffect(() => {
     const fetchData = async () => {
@@ -63,11 +69,30 @@ export default function EditDiscoverAdress(props) {
   }, []);
 
   useEffect(() => {
+    const fetchData = async () => {
+      const neighborhoods = await api.get(
+        "neighborhood/" + props.idDiscoverydAdress
+      );
+      let temp = {};
+      //let temp2 = [];
+      let anotherNeighborhoods = [];
+      for (let i = 0; i < neighborhoods.data.length; i++) {
+        control = [...control, neighborhoods.data[i].name];
+        temp = { label: neighborhoods.data[i].name, value: neighborhoods.data[i].name };
+        anotherNeighborhoods = [...anotherNeighborhoods, temp];
+      }
+      setSize(anotherNeighborhoods.length)
+      setValues(anotherNeighborhoods);
+      setControler(control);
+    };
+    fetchData();
+  }, []);
+
+  useEffect(() => {
     setValue(
       "district",
       value.map(({ value }) => value)
     );
-    console.log(getValues());
   }, [value]);
 
   const [dataCm, setDataCm] = useState([]);
@@ -82,6 +107,36 @@ export default function EditDiscoverAdress(props) {
   }, []);
 
   const submitForm = (values) => {
+  
+    let on = [];
+    let off = [];
+    control.forEach(element => {
+      let found = false;
+      for (let i = 0; i < values.district.length; i++) {
+        if (element === values.district[i]) {
+          found = true;
+          break;
+        }
+      }
+      if (found == false) {
+        off = [...off, element]
+      }
+    });
+
+    values.district.forEach(element => {
+      let found = false;
+      for (let i = 0; i < control.length; i++) {
+        if (element === control[i]) {
+          found = true;
+          break;
+        }
+      }
+      if (found == false) {
+        on = [...on, element]
+      }
+    });
+    values = { ...values, on };
+    values = { ...values, off };
     api.put("discovery-address/" + props.idDiscoverydAdress, values).then(
       (res) => {
         alert("SUCESSO!!! \n Edição realizada com sucesso!!!");
@@ -93,6 +148,7 @@ export default function EditDiscoverAdress(props) {
     );
   };
 
+
   const createOption = (label) => ({
     label,
     value: label,
@@ -100,11 +156,22 @@ export default function EditDiscoverAdress(props) {
 
   const handleChange2 = async () => {
     if (!inputValue) return;
-    setInputValue("");
     const newOption = createOption(inputValue);
     await api.post("neighborhood", { name: newOption.value });
     setValues([...value, newOption]);
     setOptions([...option, newOption]);
+  };
+
+  const checkRepeated = async (x) => {
+    const val = await api.get("neighborhood-name/" + x[x.length - 1].value);
+    if (val.data) {
+      if (val.data.discovery_address_id === null) {
+        setValues(x);
+        setSize(x.length);
+      } else {
+        setErrorMessage('Esse bairro já pertence a uma região da cidade');
+      }
+    }
   };
 
   return (
@@ -128,17 +195,28 @@ export default function EditDiscoverAdress(props) {
               isClearable
               isMulti
               onChange={(v) => {
-                setValues(v);
+                if (v.length < size){
+                  setValues(v);
+                  setSize(v.length)
+                }else{
+                  checkRepeated(v);
+                }
+                
               }}
-              onInputChange={(input) => setInputValue(input)}
+              onInputChange={(input) => {setErrorMessage(""); setInputValue(input)}}
               onCreateOption={handleChange2}
+              on
               placeholder="Selecione o(s) bairro(s)"
               value={value}
               options={option}
+
             />
             <p className="validationError">
               {" "}
               {errors?.district && errors?.district.message}{" "}
+            </p>
+            <p className="validationError">
+              {errorMessage}
             </p>
           </div>
 

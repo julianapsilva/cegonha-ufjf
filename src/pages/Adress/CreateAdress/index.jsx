@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import "./style.css";
 import api from "../../../services/api";
@@ -7,6 +7,7 @@ import { yupResolver } from "@hookform/resolvers/yup";
 import schema from "./schema";
 import axios from "axios";
 import { cepMask } from "../../../utils/cepMask";
+import getCities from '../../../utils/getCities'
 
 export default function CreateAdress(props) {
   const {
@@ -20,6 +21,16 @@ export default function CreateAdress(props) {
   });
 
   const navigate = useNavigate();
+  
+  const [cities, setCities] = useState([]);
+
+  useEffect(() => {
+    const fetchData = async () => {
+      const c = await getCities("mg")
+      setCities(c)
+    };
+    fetchData();
+  }, []);
 
   const verifyCEP = ({ target }) => {
     const cep = target.value.replace(/\D/g, "");
@@ -97,14 +108,21 @@ export default function CreateAdress(props) {
             </p>
           </div>
 
-          <div>
-            <p>Cidade</p>
-            <input type="text" name="city" {...register("city")} />
-            <p className="validationError">
-              {" "}
-              {errors?.city && "Campo obrigatório"}{" "}
-            </p>
-          </div>
+          <div className="drop-select">
+              <p>Cidade</p>
+              <div>
+                <select {...register("city")}>
+                  {cities?.length > 0 &&
+                    cities?.map(city => <option key={city.id} value={city.nome}>{city.nome}</option>
+                    )
+                  }
+                </select>
+                <p className="validationError">
+                  {" "}
+                  {errors?.city && "Campo obrigatório"}{" "}
+                </p>
+              </div>
+            </div>
 
           <div className="drop-list">
             <div className="from">
