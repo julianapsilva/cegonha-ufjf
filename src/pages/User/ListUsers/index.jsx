@@ -19,7 +19,7 @@ const ListUsers = () => {
   }, []);
 
   const [modalIsOpen, setIsOpen] = React.useState(false);
-  const [page, setPage] = React.useState(false);
+  const [page, setPage] = React.useState('');
   const [cpfUser, setCpfUser] = React.useState(false);
 
   function swichPage(page, cpf) {

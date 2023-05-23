@@ -26,6 +26,7 @@ export default function CreateDiscoveryAdress() {
   const [value, setValues] = useState([]);
   const [option, setOptions] = useState([]);
   const [cities, setCities] = useState([]);
+  const [errorMessage, setErrorMessage] = useState("");
 
   useEffect(() => {
     const fetchData = async () => {
@@ -76,6 +77,17 @@ export default function CreateDiscoveryAdress() {
 
   };
 
+  const checkRepeated = async (x) => {
+    const val = await api.get("neighborhood-name/" + x[x.length - 1].value);
+    if (val.data) {
+      if (val.data.discoveyAddressId === null) {
+        setValues(x);
+      } else {
+        setErrorMessage(x[x.length - 1].value + ' já pertence a uma região da cidade');
+      }
+    }
+  };
+
   return (
     <div>
       <Sidebar />
@@ -99,9 +111,9 @@ export default function CreateDiscoveryAdress() {
                 isClearable
                 isMulti
                 onChange={(v) => {
-                  setValues(v);
+                  checkRepeated(v)
                 }}
-                onInputChange={(input) => setInputValue(input)}
+                onInputChange={(input) => {setErrorMessage("");setInputValue(input)}}
                 onCreateOption={handleChange2}
                 placeholder="Selecione o(s) bairro(s)"
                 value={value}
@@ -110,6 +122,9 @@ export default function CreateDiscoveryAdress() {
               <p className="validationError">
                 {" "}
                 {errors?.district && errors?.district.message}{" "}
+              </p>
+              <p className="validationError">
+                {errorMessage}
               </p>
             </div>
 

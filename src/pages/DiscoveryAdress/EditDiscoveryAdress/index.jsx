@@ -3,7 +3,7 @@ import "./style.css";
 import api from "../../../services/api";
 import { useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
-import schema from "../CreateDiscoveryAdress/schema";
+import schema from "./schema"
 import CreatableSelect from "react-select/creatable";
 import getCities from "../../../utils/getCities";
 
@@ -22,12 +22,11 @@ export default function EditDiscoverAdress(props) {
   };
 
   const [data, setData] = useState([]);
+  const [discoveryAddress, setDdiscoveryAddress] = useState([]);
   const [inputValue, setInputValue] = useState("");
   const [value, setValues] = useState([]);
   const [option, setOptions] = useState([]);
   const [cities, setCities] = useState([]);
-  const [region, setRegion] = useState();
-  const [districtIn, setFistrictIn] = useState([]);
   const [controler, setControler] = useState([]);
   const [errorMessage, setErrorMessage] = useState("");
   const [size, setSize] = useState(0);
@@ -49,6 +48,7 @@ export default function EditDiscoverAdress(props) {
         "discovery-address/" + props.idDiscoverydAdress
       );
       setDataResult(result);
+      setDdiscoveryAddress(result.data);
       const {
         region,
         district,
@@ -107,10 +107,9 @@ export default function EditDiscoverAdress(props) {
   }, []);
 
   const submitForm = (values) => {
-  
     let on = [];
     let off = [];
-    control.forEach(element => {
+    controler.forEach(element => {
       let found = false;
       for (let i = 0; i < values.district.length; i++) {
         if (element === values.district[i]) {
@@ -125,8 +124,8 @@ export default function EditDiscoverAdress(props) {
 
     values.district.forEach(element => {
       let found = false;
-      for (let i = 0; i < control.length; i++) {
-        if (element === control[i]) {
+      for (let i = 0; i < controler.length; i++) {
+        if (element === controler[i]) {
           found = true;
           break;
         }
@@ -165,11 +164,11 @@ export default function EditDiscoverAdress(props) {
   const checkRepeated = async (x) => {
     const val = await api.get("neighborhood-name/" + x[x.length - 1].value);
     if (val.data) {
-      if (val.data.discovery_address_id === null) {
+      if (val.data.discoveyAddressId === null) {
         setValues(x);
         setSize(x.length);
       } else {
-        setErrorMessage('Esse bairro já pertence a uma região da cidade');
+        setErrorMessage(x[x.length - 1].value +' já pertence a uma região da cidade');
       }
     }
   };
@@ -177,16 +176,17 @@ export default function EditDiscoverAdress(props) {
   return (
     <div className="create-user">
       <div class="wrapper">
-        <header>Editar Área Descoberta</header>
+        <header>Editar Área Descoberta de:</header>
+        <header>{discoveryAddress.region} de {discoveryAddress.city}, {discoveryAddress.uf} </header>
         <form onSubmit={handleSubmit(submitForm)}>
-          <div>
-            <p>Região</p>
+          {/*<div>
+            <p>{discoveryAddress.region}</p>
             <input type="text" {...register("region")} />
             <p className="validationError">
               {" "}
               {errors?.region && "Insira uma região"}{" "}
             </p>
-          </div>
+          </div>*/}
 
           <div>
             <p>Bairro(s)</p>
@@ -220,14 +220,14 @@ export default function EditDiscoverAdress(props) {
             </p>
           </div>
 
-          <div
+          {/*<div
             className="drop-select"
             onChange={async () => {
               const c = await getCities(getValues("uf"));
               setCities(c);
             }}
           >
-            <p>Estado</p>
+            <p>{discoveryAddress.uf}</p>
             <div>
               <select {...register("uf")}>
                 <option value={"AC"}>Acre (AC) </option>
@@ -267,7 +267,7 @@ export default function EditDiscoverAdress(props) {
           </div>
 
           <div className="drop-select">
-            <p>Cidade</p>
+          <p>{discoveryAddress.city}</p>
             <div>
               <select {...register("city")}>
                 {cities?.length > 0 &&
@@ -282,7 +282,7 @@ export default function EditDiscoverAdress(props) {
                 {errors?.city && "Campo obrigatório"}{" "}
               </p>
             </div>
-          </div>
+          </div>*/}
 
           <div class="drop-select">
             <p>Local de parto</p>

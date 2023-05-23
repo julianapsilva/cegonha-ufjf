@@ -11,6 +11,7 @@ import ListCoverAdress from './pages/CoverAdress/ListCoverAdress'
 import CreateCoverAdress from './pages/CoverAdress/CreateCoverAdress';
 import ListDiscoveryAdress from './pages/DiscoveryAdress/ListDiscoveryAdress';
 import CreateDiscoveryAdress from './pages/DiscoveryAdress/CreateDiscoveryAdress';
+import ListDistrics from './pages/DiscoveryAdress/ListDistricts'
 
 
 const App = () => {
@@ -27,6 +28,7 @@ const App = () => {
         <Route path="/" element={<Navigate to="/login"/>} />
         <Route path="/discovery-adress" element={<ListDiscoveryAdress/>} />
         <Route path="/create-discovery-adress" element={<CreateDiscoveryAdress/>} />
+        <Route path="/districts" element={<ListDistrics/>} />
       </Routes>
     </BrowserRouter>
   );
